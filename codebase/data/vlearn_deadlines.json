@@ -1,0 +1,50 @@
+[
+  {
+    "title": "Nộp báo cáo Lab 3 - Machine Learning",
+    "description": "Nộp file .ipynb + báo cáo PDF qua VLearn, không nhận nộp trễ.",
+    "importance": 4,
+    "due_offset_hours": -20
+  },
+  {
+    "title": "Kiểm tra thực hành - Mạng máy tính",
+    "description": "Bài kiểm tra thực hành cấu hình router/switch trên VLearn.",
+    "importance": 5,
+    "due_offset_hours": -50
+  },
+  {
+    "title": "Bài tập tuần - Cấu trúc dữ liệu",
+    "description": "Làm 5 bài trên VLearn, tự chấm điểm trước khi nộp.",
+    "importance": 2,
+    "due_offset_hours": -3
+  },
+  {
+    "title": "Quiz cuối chương - Xác suất thống kê",
+    "description": "Quiz 20 câu trắc nghiệm, làm 1 lần trên VLearn.",
+    "importance": 3,
+    "due_offset_hours": 6
+  },
+  {
+    "title": "Nộp code review PR#12",
+    "description": "Đổi 2 người review code của nhau trước khi merge.",
+    "importance": 3,
+    "due_offset_hours": 28
+  },
+  {
+    "title": "Đồ án giữa kỳ - Deep Learning",
+    "description": "Nộp repo + slide + video demo 5 phút qua VLearn.",
+    "importance": 5,
+    "due_offset_hours": 48
+  },
+  {
+    "title": "Thuyết trình nhóm - Hệ điều hành",
+    "description": "Mỗi nhóm thuyết trình 10 phút, nộp slide trước giờ học.",
+    "importance": 4,
+    "due_offset_hours": 96
+  },
+  {
+    "title": "Khảo sát môn học cuối kỳ",
+    "description": "Điền khảo sát đánh giá môn học trên VLearn.",
+    "importance": 1,
+    "due_offset_hours": 144
+  }
+]
