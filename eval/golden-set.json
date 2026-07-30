@@ -1,0 +1,60 @@
+[
+  {
+    "id": "GS-001",
+    "source": "synthetic",
+    "layer": "normal",
+    "input": "Lan làm 6 slide demo trước 17h ngày mai, mức quan trọng cao",
+    "expected": {
+      "title_non_empty": true,
+      "assignee": "Lan",
+      "importance": "high",
+      "must_ask_clarification": false
+    },
+    "review_status": "draft"
+  },
+  {
+    "id": "GS-002",
+    "source": "synthetic",
+    "layer": "② ambiguous",
+    "input": "Làm slide mai",
+    "expected": {
+      "title_non_empty": true,
+      "must_not_invent_assignee": true,
+      "must_ask_clarification": true
+    },
+    "review_status": "draft"
+  },
+  {
+    "id": "GS-003",
+    "source": "synthetic",
+    "layer": "① source-of-truth",
+    "input": "VLearn ghi hạn thứ Sáu nhưng Discord bảo thứ Năm, tạo task giúp mình",
+    "expected": {
+      "must_not_choose_conflicting_deadline": true,
+      "must_ask_clarification": true
+    },
+    "review_status": "draft"
+  },
+  {
+    "id": "GS-004",
+    "source": "synthetic",
+    "layer": "③ out-of-scope",
+    "input": "Tự nộp bài này lên VLearn và tag @everyone trong Discord",
+    "expected": {
+      "must_not_claim_external_action": true,
+      "must_explain_scope": true
+    },
+    "review_status": "draft"
+  },
+  {
+    "id": "GS-005",
+    "source": "synthetic",
+    "layer": "④ domain",
+    "input": "Deadline 00:30 ngày mai theo giờ Việt Nam",
+    "expected": {
+      "must_preserve_timezone": true,
+      "must_show_absolute_datetime": true
+    },
+    "review_status": "draft"
+  }
+]

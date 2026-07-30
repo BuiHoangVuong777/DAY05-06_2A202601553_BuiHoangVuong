@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="StudyFlow — prototype nhắc tiến độ học tập thông minh cho sinh viên."
+    />
+    <title>StudyFlow · Nhắc đúng việc, đúng lúc</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Trang chủ StudyFlow">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span>
+          <strong>StudyFlow</strong>
+          <small>team study copilot</small>
+        </span>
+      </a>
+      <div class="topbar-actions">
+        <span class="status-pill" id="ai-status">Đang kiểm tra AI…</span>
+        <button class="ghost-button" id="refresh-button" type="button">Làm mới</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div>
+          <p class="eyebrow">TỔNG QUAN HÔM NAY</p>
+          <h1>Team nên làm việc gì tiếp theo?</h1>
+          <p class="hero-copy">
+            Gom task từ một chỗ, ưu tiên bằng luật minh bạch và nhắc trước khi deadline bị bỏ sót.
+          </p>
+        </div>
+        <div class="date-card">
+          <span id="today-weekday">—</span>
+          <strong id="today-date">—</strong>
+          <small>Asia/Ho_Chi_Minh</small>
+        </div>
+      </section>
+
+      <section class="metrics" aria-label="Chỉ số tiến độ">
+        <article class="metric-card metric-primary">
+          <span>Task đang mở</span>
+          <strong id="metric-active">—</strong>
+          <small>Của cả team</small>
+        </article>
+        <article class="metric-card">
+          <span>Hôm nay / quá hạn</span>
+          <strong id="metric-due">—</strong>
+          <small>Cần xử lý trước</small>
+        </article>
+        <article class="metric-card">
+          <span>Cảnh báo kẹt</span>
+          <strong id="metric-alerts">—</strong>
+          <small>Rule engine phát hiện</small>
+        </article>
+        <article class="metric-card">
+          <span>Hoàn thành</span>
+          <strong id="metric-completion">—</strong>
+          <small>Trên toàn bộ task</small>
+        </article>
+      </section>
+
+      <section class="workspace-grid">
+        <div class="main-column">
+          <article class="panel quick-capture">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">CẬP NHẬT NHANH</p>
+                <h2>Nhập task bằng một câu</h2>
+              </div>
+              <span class="honesty-label">AI thật khi có API key</span>
+            </div>
+            <form id="quick-form">
+              <label class="sr-only" for="quick-input">Mô tả task</label>
+              <div class="capture-row">
+                <textarea
+                  id="quick-input"
+                  rows="2"
+                  maxlength="2000"
+                  placeholder="Ví dụ: Lan làm 6 slide demo trước 17h ngày mai, việc này quan trọng"
+                  required
+                ></textarea>
+                <button class="primary-button" id="parse-button" type="submit">
+                  <span>✨</span> AI đọc task
+                </button>
+              </div>
+              <p class="form-hint" id="parse-hint">
+                AI chỉ điền nháp. Bạn luôn kiểm tra và sửa trước khi lưu.
+              </p>
+            </form>
+
+            <form class="task-draft hidden" id="task-form">
+              <div class="draft-banner" id="draft-banner"></div>
+              <div class="field-grid">
+                <label class="field field-wide">
+                  <span>Tên task</span>
+                  <input id="task-title" name="title" maxlength="180" required />
+                </label>
+                <label class="field">
+                  <span>Người phụ trách</span>
+                  <input id="task-assignee" name="assignee" placeholder="Tên thành viên" />
+                </label>
+                <label class="field">
+                  <span>Môn / dự án</span>
+                  <input id="task-course" name="course" placeholder="Mini Hackathon" />
+                </label>
+                <label class="field">
+                  <span>Deadline</span>
+                  <input id="task-due" name="due_at" type="datetime-local" required />
+                </label>
+                <label class="field">
+                  <span>Độ quan trọng</span>
+                  <select id="task-importance" name="importance">
+                    <option value="high">Cao</option>
+                    <option value="medium" selected>Vừa</option>
+                    <option value="low">Thấp</option>
+                  </select>
+                </label>
+                <label class="field field-wide">
+                  <span>Mô tả</span>
+                  <textarea id="task-description" name="description" rows="2"></textarea>
+                </label>
+              </div>
+              <div class="form-actions">
+                <button class="ghost-button" id="cancel-draft" type="button">Bỏ nháp</button>
+                <button class="primary-button" type="submit">Lưu vào danh sách</button>
+              </div>
+            </form>
+          </article>
+
+          <article class="panel">
+            <div class="panel-heading task-heading">
+              <div>
+                <p class="eyebrow">ƯU TIÊN CỦA TEAM</p>
+                <h2>Việc cần làm</h2>
+              </div>
+              <div class="legend">
+                <span><i class="dot dot-critical"></i>Khẩn cấp</span>
+                <span><i class="dot dot-high"></i>Ưu tiên</span>
+              </div>
+            </div>
+            <div id="task-list" class="task-list" aria-live="polite">
+              <div class="loading-card">Đang tải danh sách…</div>
+            </div>
+          </article>
+        </div>
+
+        <aside class="side-column">
+          <article class="panel reminder-panel">
+            <div class="panel-heading compact">
+              <div>
+                <p class="eyebrow">NHẮC ĐÚNG LÚC</p>
+                <h2>Preview Discord</h2>
+              </div>
+              <span class="mock-badge">MOCK</span>
+            </div>
+            <p class="integration-note">
+              Tin nhắn này được tạo từ task thật trong app. Chưa gửi ra Discord.
+            </p>
+            <div class="discord-card">
+              <div class="discord-header">
+                <span class="discord-icon">#</span>
+                <strong id="discord-channel">team-study</strong>
+              </div>
+              <pre id="discord-message">Đang tạo bản nhắc…</pre>
+            </div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-heading compact">
+              <div>
+                <p class="eyebrow">RULE ENGINE</p>
+                <h2>Vì sao task lên đầu?</h2>
+              </div>
+            </div>
+            <ol class="rule-list">
+              <li><span>01</span> Việc quá hạn được đẩy lên trước.</li>
+              <li><span>02</span> Task kẹt ≥2 ngày sẽ cảnh báo.</li>
+              <li><span>03</span> Deadline gần + tiến độ thấp tăng ưu tiên.</li>
+              <li><span>04</span> Độ quan trọng dùng làm trọng số.</li>
+            </ol>
+          </article>
+
+          <article class="panel weekly-panel">
+            <div class="panel-heading compact">
+              <div>
+                <p class="eyebrow">MỤC TIÊU TUẦN</p>
+                <h2>Việc chưa xong</h2>
+              </div>
+            </div>
+            <div id="weekly-list" class="weekly-list"></div>
+          </article>
+        </aside>
+      </section>
+    </main>
+
+    <dialog id="checkin-dialog">
+      <form method="dialog" id="checkin-form">
+        <button class="dialog-close" id="close-checkin" type="button" aria-label="Đóng">×</button>
+        <p class="eyebrow">CHECK-IN 30 GIÂY</p>
+        <h2 id="checkin-title">Cập nhật tiến độ</h2>
+        <input id="checkin-id" type="hidden" />
+        <label class="field">
+          <span>Tiến độ: <strong id="progress-value">0%</strong></span>
+          <input id="checkin-progress" type="range" min="0" max="100" step="5" />
+        </label>
+        <label class="field">
+          <span>Trạng thái</span>
+          <select id="checkin-status">
+            <option value="todo">Chưa làm</option>
+            <option value="in_progress">Đang làm</option>
+            <option value="blocked">Đang kẹt</option>
+            <option value="done">Đã xong</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Đang kẹt gì / ghi chú</span>
+          <textarea id="checkin-note" rows="3" placeholder="Nêu blocker cụ thể để team hỗ trợ"></textarea>
+        </label>
+        <div class="form-actions">
+          <button class="ghost-button" id="cancel-checkin" type="button">Huỷ</button>
+          <button class="primary-button" id="save-checkin" value="default">Lưu cập nhật</button>
+        </div>
+      </form>
+    </dialog>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <script src="/app.js" defer></script>
+  </body>
+</html>

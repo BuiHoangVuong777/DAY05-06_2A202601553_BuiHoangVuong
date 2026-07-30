@@ -1,3 +1,10 @@
 .DS_Store
 node_modules/
 *.env
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+codebase/data/*.db
+codebase/data/*.db-*

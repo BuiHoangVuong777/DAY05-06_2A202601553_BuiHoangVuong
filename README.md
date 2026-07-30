@@ -1,4 +1,64 @@
-# Mini Hackathon AI — Batch 03
+# StudyFlow — AI nhắc tiến độ học tập cho sinh viên
+
+> Trạng thái: nền prototype mức **Mock** đã chạy được. Evidence, AI Spec và validation đang chờ team điền bằng dữ liệu thật.
+
+## Thành viên và phân công
+
+| Thành viên | Mã học viên | Phụ trách | File/artifact |
+|---|---|---|---|
+| Bùi Hoàng Vương | 2A202601553 | Điều phối + code integration | `codebase/`, `README.md` |
+| [Điền tên] | [Điền mã] | Evidence/mining | `evidence/`, `spec.md` §1-§2 |
+| [Điền tên] | [Điền mã] | Prompt + eval | `eval/`, `spec.md` §5-§7 |
+| [Điền tên] | [Điền mã] | UX + validation | `validation/`, `spec.md` §4, §9 |
+| [Điền tên] | [Điền mã] | Demo + slides | `demo-slides.pdf`, demo script |
+
+## Lát cắt đang build
+
+Một sinh viên đang phối hợp bài nhóm nhập cập nhật học tập bằng một câu; AI tạo bản nháp task có cấu trúc để người đó xác nhận; rule engine xếp việc cần làm trước; cả team nhìn thấy đúng việc trước khi trễ hạn.
+
+Prototype hiện có:
+
+- cập nhật task và blocker trong 30 giây;
+- nhắc việc hôm nay, mục tiêu tuần và việc chưa xong;
+- ưu tiên task quá hạn, deadline gần, quan trọng hoặc bị kẹt nhiều ngày;
+- preview tin nhắn Discord, có nhãn **MOCK**;
+- Gemini thật cho bước đọc task khi có API key, có fallback được ghi nhãn rõ.
+
+## Chạy prototype
+
+```bash
+cd codebase
+cp .env.example .env
+python3 server.py
+```
+
+Mở <http://127.0.0.1:8000>. Xem hướng dẫn kỹ hơn tại [`codebase/README.md`](codebase/README.md).
+
+## Cấu trúc bài nộp
+
+```text
+repo/
+├── README.md
+├── spec.md
+├── codebase/
+├── discovery/
+├── evidence/
+├── eval/
+├── validation/
+├── reflection/
+└── demo-slides.pdf        # team bổ sung trước CP6
+```
+
+## Giới hạn đã khai báo
+
+- Chưa đồng bộ API thật từ VLearn.
+- Chưa gửi message thật ra Discord; UI chỉ preview.
+- Không tự đổi người phụ trách. Hệ thống chỉ cảnh báo/gợi ý, thành viên quyết định.
+- Dữ liệu seed trong app là dữ liệu giả, không phải dữ liệu sinh viên thật.
+
+---
+
+# Tài liệu gốc — Mini Hackathon AI · Batch 03
 
 **SPEC → Prototype → Demo.** Đây không phải cuộc thi code — đây là cuộc thi **tư duy sản phẩm AI**.
 
