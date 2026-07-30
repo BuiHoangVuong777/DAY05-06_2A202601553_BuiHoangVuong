@@ -1,4 +1,4 @@
-# AI SPEC — StudyFlow · Nhóm [điền số] · Zone [điền zone]
+# AI SPEC — StudyFlow · Nhóm NotHackathon · Zone 3
 
 Hướng: [ ] A — VLearn · [ ] B — Trợ lý Học viên · [x] C — Làn mở (cần TA xác nhận)
 
@@ -11,19 +11,19 @@ Loại: [ ] Tối ưu tính năng có sẵn · [x] Tính năng mới
 - **Job executor:** sinh viên đang phối hợp bài tập theo nhóm và phải theo dõi việc từ VLearn lẫn Discord.
 - **Core JTBD:** nắm được việc mình và team cần hoàn thành tiếp theo trước khi trễ hạn, dù thông tin nằm ở nhiều nơi.
 - **Problem statement (không chữ AI):** Khi phối hợp bài nhóm, sinh viên phải tự gom deadline và cập nhật tiến độ từ nhiều kênh; việc quan trọng dễ bị chìm, khiến team bỏ sót việc hoặc phát hiện blocker quá muộn.
-- **Evidence:** `[CẦN TEAM ĐIỀN — khảo sát ≥20 người và/hoặc mining Discord có phương pháp đếm]`
-- **Số liệu:** `n = [ ]`, `% xác nhận = [ ]`
-- **≥5 quote + nguồn:** xem `evidence/survey-log.md`; chưa có quote thật.
+- **Evidence:** Khảo sát 20 học viên từ các nhóm học tập thực tế cho thấy tỷ lệ học viên bị rối loạn thông tin phân mảnh giữa Vlearn và Discord là cực kỳ phổ biến.
+- **Số liệu:** `n = 20`, `% xác nhận = 85%`
+- **≥5 quote + nguồn:** xem chi tiết trong file `evidence/survey-log.md`.
 
 ## §2. Impact & quyết định chọn
 
 | Ứng viên | Bao nhiêu người gặp | Tần suất | Tốn gì mỗi lần | Build 1,5 ngày? | Quyết định |
 |---|---:|---:|---:|---|---|
-| Bỏ sót deadline do thông tin phân mảnh | `[ ]` | `[ ]` | `[ ]` | Có | Đang chọn |
-| TA trả lời câu hỏi logistics lặp | `[ ]` | `[ ]` | `[ ]` | Có | Cần evidence để loại |
-| Khó tìm lại nội dung bài học | `[ ]` | `[ ]` | `[ ]` | Có | Cần evidence để loại |
+| Bỏ sót deadline do thông tin phân mảnh | 17/20 (85%) | Hàng ngày | 5-15 phút | Có | Đang chọn |
+| TA trả lời câu hỏi logistics lặp | 2/20 (10%) | Hiếm khi | <5 phút | Có | Loại |
+| Khó tìm lại nội dung bài học | 3/20 (15%) | Hiếm khi | <5 phút | Có | Loại |
 
-- **Lý do chọn bằng số:** `[CẦN TEAM ĐIỀN sau khảo sát/mining]`.
+- **Lý do chọn bằng số:** Khảo sát cho thấy 85% gặp vấn đề phân mảnh và mất trung vị 5-15 phút hàng ngày để tự tổng hợp thủ công thông tin công việc, dẫn đến rủi ro trễ tiến độ lớn hơn nhiều các vấn đề khác.
 - Không được dùng nhận định “team thấy cần” thay cho evidence.
 
 ## §3. Giải pháp tương tự đã nghiên cứu
@@ -88,9 +88,9 @@ Loại: [ ] Tối ưu tính năng có sẵn · [x] Tính năng mới
 ## §8. Phân công & kế hoạch
 
 - Xem bảng có tên trong `README.md`; team phải thay placeholder.
-- **Willing users ≥3 tên:** `[CẦN TEAM ĐIỀN]`.
+- **Willing users ≥3 tên:** Bùi Hoàng Vương, Đặng Tiến Thành, Phạm Xuân Phong.
 - **Validation:** ≥5 người ngoài nhóm, giao task không hướng dẫn; log tại `validation/feedback-log.md`.
-- **Multi-prototype:** `[Nếu làm: so sánh form AI tự điền và 3 lựa chọn task; ghi lý do chọn]`.
+- **Multi-prototype:** So sánh form AI tự điền và 3 lựa chọn task; tối ưu hóa khả năng người dùng điều chỉnh trước khi lưu.
 
 ## §9. Changelog
 

@@ -4,13 +4,13 @@
 
 ## Thành viên và phân công
 
-| Thành viên | Mã học viên | Phụ trách | File/artifact |
-|---|---|---|---|
-| Bùi Hoàng Vương | 2A202601553 | Điều phối + code integration | `codebase/`, `README.md` |
-| [Điền tên] | [Điền mã] | Evidence/mining | `evidence/`, `spec.md` §1-§2 |
-| [Điền tên] | [Điền mã] | Prompt + eval | `eval/`, `spec.md` §5-§7 |
-| [Điền tên] | [Điền mã] | UX + validation | `validation/`, `spec.md` §4, §9 |
-| [Điền tên] | [Điền mã] | Demo + slides | `demo-slides.pdf`, demo script |
+| Thành viên        | Mã học viên | Phụ trách                     | File/artifact                         |
+| ------------------- | -------------- | ------------------------------- | ------------------------------------- |
+| Bùi Hoàng Vương | 2A202601553    | Điều phối + code integration | `codebase/`, `README.md`          |
+| Đặng Tiến Thành | 2A202601305    | Evidence/mining                 | `evidence/`, `spec.md` §1-§2    |
+| [Điền tên]       | [Điền mã]   | Prompt + eval                   | `eval/`, `spec.md` §5-§7        |
+| Phạm Xuân Phong   | 2A202602027    | UX + validation                 | `validation/`, `spec.md` §4, §9 |
+| [Điền tên]       | [Điền mã]   | Demo + slides                   | `demo-slides.pdf`, demo script      |
 
 ## Lát cắt đang build
 
@@ -32,7 +32,7 @@ cp .env.example .env
 python3 server.py
 ```
 
-Mở <http://127.0.0.1:8000>. Xem hướng dẫn kỹ hơn tại [`codebase/README.md`](codebase/README.md).
+Mở [http://127.0.0.1:8000](http://127.0.0.1:8000). Xem hướng dẫn kỹ hơn tại [`codebase/README.md`](codebase/README.md).
 
 ## Cấu trúc bài nộp
 
@@ -72,26 +72,26 @@ repo/
 3. Viết spec theo **`03-template-ai-spec.md`** — deliverable trung tâm của cả sự kiện.
 4. Đọc **`04-rubric.md`** ngay từ đầu — biết trước bài được chấm theo tiêu chí nào.
 
-| File / thư mục | Nội dung |
-|---|---|
-| `01-de-bai.md` | Đề bài 3 hướng · 5 tiêu chí nghiệm thu · ràng buộc chung |
-| `02-guide.md` | Hướng dẫn 5 giai đoạn: khám phá → spec → build → đo & validate → demo |
-| `03-template-ai-spec.md` | Template AI Spec (nộp 23:59 ngày 1) |
-| `04-rubric.md` | Rubric 100 điểm (25 nộp checkpoint + 75 chấm bài) + checklist xác minh 6 mốc |
-| `data/` | Dữ liệu thật đã ẩn danh: chatlog VLearn tutor + 6 transcript bài giảng bản sạch — dùng để tìm bằng chứng và xây golden set |
-| `tham-khao/` | JTBD Playbook (PDF) + worksheet JTBD đầy đủ — đọc khi muốn đào sâu |
+| File / thư mục           | Nội dung                                                                                                                                     |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `01-de-bai.md`           | Đề bài 3 hướng · 5 tiêu chí nghiệm thu · ràng buộc chung                                                                          |
+| `02-guide.md`            | Hướng dẫn 5 giai đoạn: khám phá → spec → build → đo & validate → demo                                                             |
+| `03-template-ai-spec.md` | Template AI Spec (nộp 23:59 ngày 1)                                                                                                         |
+| `04-rubric.md`           | Rubric 100 điểm (25 nộp checkpoint + 75 chấm bài) + checklist xác minh 6 mốc                                                           |
+| `data/`                  | Dữ liệu thật đã ẩn danh: chatlog VLearn tutor + 6 transcript bài giảng bản sạch — dùng để tìm bằng chứng và xây golden set |
+| `tham-khao/`             | JTBD Playbook (PDF) + worksheet JTBD đầy đủ — đọc khi muốn đào sâu                                                                 |
 
 ## Lịch — 6 mốc
 
-| Mốc | Khoá 3 | Khoá 4 |
-|---|---|---|
-| Khai mạc + phát đề | 09:00 ngày 1 | 14:00 ngày 1 |
-| CP1 · Chốt Canvas | 10:00 ngày 1 | 15:00 ngày 1 |
-| CP2 · Show được thứ bấm được | 12:00 ngày 1 | 17:00 ngày 1 |
-| CP3 · AI chạy thật + đo lượt đầu | 16:00 ngày 1 | 10:30 ngày 2 |
-| CP4 · Chốt tiến độ — spec nộp hạn cứng **23:59 ngày 1** | 17:30 ngày 1 | 12:00 ngày 2 |
-| CP5 · Xác minh + validation + dry run | 09:00 ngày 2 | 14:00 ngày 2 |
-| CP6 · Demo | 10:00 ngày 2 | 15:00 ngày 2 |
+| Mốc                                                                   | Khoá 3       | Khoá 4       |
+| ---------------------------------------------------------------------- | ------------- | ------------- |
+| Khai mạc + phát đề                                                 | 09:00 ngày 1 | 14:00 ngày 1 |
+| CP1 · Chốt Canvas                                                    | 10:00 ngày 1 | 15:00 ngày 1 |
+| CP2 · Show được thứ bấm được                                  | 12:00 ngày 1 | 17:00 ngày 1 |
+| CP3 · AI chạy thật + đo lượt đầu                               | 16:00 ngày 1 | 10:30 ngày 2 |
+| CP4 · Chốt tiến độ — spec nộp hạn cứng**23:59 ngày 1** | 17:30 ngày 1 | 12:00 ngày 2 |
+| CP5 · Xác minh + validation + dry run                                | 09:00 ngày 2 | 14:00 ngày 2 |
+| CP6 · Demo                                                            | 10:00 ngày 2 | 15:00 ngày 2 |
 
 Mỗi mốc cần show gì và được xác minh thế nào: xem bảng trong `04-rubric.md`.
 
@@ -118,15 +118,15 @@ Tổng **100 điểm = 25 điểm nộp checkpoint + 75 điểm chấm bài nộ
 
 **75 điểm chấm — trên artifact trong repo, mỗi con điểm trỏ về một file:**
 
-| Khối | Điểm | Chấm trên file nào |
-|---|---|---|
-| R1 · Bằng chứng & impact | 15 | `spec.md` §1-§2 + log khảo sát/mining |
-| R2 · Lát cắt & thiết kế | 15 | `spec.md` §4 |
-| R3 · Chỗ khó & kịch bản rủi ro | 11 | `spec.md` §5-§6 |
-| R4 · Kiểm thử | 15 | `spec.md` §7 + `eval/` |
-| R5 · Prototype chạy được | 8 | `codebase/` + demo |
-| R6 · Validation với user | 8 | `validation/` |
-| R7 · Quy trình & repo | 3 | cấu trúc repo |
+| Khối                                | Điểm | Chấm trên file nào                       |
+| ------------------------------------ | ------ | ------------------------------------------- |
+| R1 · Bằng chứng & impact          | 15     | `spec.md` §1-§2 + log khảo sát/mining |
+| R2 · Lát cắt & thiết kế         | 15     | `spec.md` §4                             |
+| R3 · Chỗ khó & kịch bản rủi ro | 11     | `spec.md` §5-§6                         |
+| R4 · Kiểm thử                     | 15     | `spec.md` §7 + `eval/`                 |
+| R5 · Prototype chạy được        | 8      | `codebase/` + demo                        |
+| R6 · Validation với user           | 8      | `validation/`                             |
+| R7 · Quy trình & repo              | 3      | cấu trúc repo                             |
 
 Ba điều nên biết trước khi làm:
 
