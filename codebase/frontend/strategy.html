@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Chi tiết chiến lược học tập do AI Study Progress Assistant đề xuất.">
+  <title>VLearn - Chiến lược học tập hôm nay</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            vlearn: { 50: '#fffbeb', 100: '#fef3c7', 500: '#f97316', 600: '#ea580c', 700: '#c2410c' }
+          }
+        }
+      }
+    };
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root { color-scheme: light; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; }
+    button, a, input, select, textarea { outline-offset: 3px; }
+    button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid rgba(249, 115, 22, .35); }
+    .toast-enter { animation: toast-in .2s ease-out; }
+    @keyframes toast-in { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+  </style>
+</head>
+<body class="min-h-screen text-slate-800 antialiased">
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+    <div id="toast" class="hidden fixed bottom-5 right-5 z-[70] max-w-sm bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl border border-slate-700 toast-enter" role="status" aria-live="polite">
+      <div class="flex items-start gap-2"><span>✨</span><span id="toast-message" class="text-sm font-semibold"></span></div>
+    </div>
+
+    <header class="bg-white border border-slate-200 rounded-2xl px-5 sm:px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
+      <div class="flex items-center gap-3 w-full sm:w-auto">
+        <div class="h-11 w-11 shrink-0 bg-gradient-to-tr from-orange-500 to-amber-400 rounded-xl flex items-center justify-center text-white font-extrabold text-xl shadow-md shadow-orange-500/20">V</div>
+        <div>
+          <h1 class="text-lg font-extrabold text-slate-900 tracking-tight">AI Study Progress Assistant</h1>
+          <p class="text-xs text-slate-500 font-medium">Chi tiết chiến lược VLearn Ecosystem</p>
+        </div>
+      </div>
+      <div class="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto">
+        <div class="hidden md:block text-right">
+          <p class="text-[10px] font-bold text-slate-400 uppercase">Cập nhật</p>
+          <p id="today-label" class="text-xs font-bold text-slate-700"></p>
+        </div>
+        <a href="/" class="bg-slate-50 border border-slate-200 text-slate-600 hover:bg-slate-100 px-4 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1 shadow-sm">⬅ Quay lại Tổng quan</a>
+        <div class="flex items-center gap-2 bg-slate-50 border border-slate-100 rounded-xl p-1.5 pr-3">
+          <div class="h-8 w-8 bg-amber-500 text-white rounded-full flex items-center justify-center font-bold text-sm">P</div>
+          <div><p class="text-xs font-bold text-slate-700">Phong</p><p class="text-[10px] text-amber-600 font-semibold">Zone 3</p></div>
+        </div>
+      </div>
+    </header>
+
+    <section class="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 shadow-sm">
+      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div>
+          <h2 class="text-2xl font-extrabold text-slate-900">Chiến lược học tập hôm nay</h2>
+          <p class="text-sm text-slate-500 mt-1">Được đề xuất dựa trên tiến độ, deadline, blocker và sự kiện hỗ trợ hiện có.</p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <span class="bg-orange-50 text-orange-700 border border-orange-200 rounded-full px-3 py-1.5 text-xs font-bold">⏱️ Tổng thời gian dự kiến: <span id="total-estimate">100 phút</span></span>
+          <span id="strategy-updated-at" class="bg-slate-50 text-slate-500 border border-slate-200 rounded-full px-3 py-1.5 text-xs font-semibold">Chưa áp dụng</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="metric-grid" class="grid grid-cols-2 lg:grid-cols-4 gap-4"></section>
+
+    <section class="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 shadow-sm space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div class="flex items-center gap-2">
+          <span class="h-2.5 w-2.5 bg-orange-500 rounded-full"></span>
+          <h2 class="text-base font-extrabold text-slate-900">💡 Gợi ý chiến lược từ AI</h2>
+        </div>
+        <span class="text-[10px] bg-slate-100 text-slate-500 border border-slate-200 rounded-full px-2 py-1 font-bold">AI chỉ đề xuất, người học quyết định</span>
+      </div>
+      <div class="bg-amber-50/60 border border-amber-100 rounded-xl p-4">
+        <p id="strategy-summary" class="text-sm leading-relaxed text-slate-800 font-bold"></p>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <button type="button" data-action="apply-plan" id="btn-apply-plan" class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-xs font-bold shadow-sm">Áp dụng kế hoạch</button>
+        <button type="button" data-action="adjust-plan" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2 rounded-lg text-xs font-bold border border-slate-200">Điều chỉnh</button>
+        <button type="button" data-action="skip-plan" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2 rounded-lg text-xs font-bold border border-slate-200">Bỏ qua</button>
+        <button type="button" data-action="regenerate-ai" id="btn-regenerate" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-xs font-bold shadow-sm">Tạo lại gợi ý bằng AI</button>
+      </div>
+    </section>
+
+    <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+        <h2 class="text-sm font-extrabold text-slate-900">🎯 Mục tiêu cuối ngày</h2>
+        <ul id="end-of-day-goals" class="mt-3 space-y-2 text-xs text-slate-600"></ul>
+      </div>
+      <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+        <h2 class="text-sm font-extrabold text-slate-900">🧠 Vì sao AI đề xuất chiến lược này?</h2>
+        <ul id="strategy-reasons" class="mt-3 space-y-2 text-xs text-slate-600"></ul>
+      </div>
+    </section>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <section class="lg:col-span-8 space-y-6">
+        <div>
+          <h2 class="text-base font-extrabold text-slate-900 mb-4">🔝 Thứ tự ưu tiên nhiệm vụ</h2>
+          <div id="priority-task-list" class="space-y-4"></div>
+        </div>
+
+        <div class="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 shadow-sm">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            <h2 class="text-base font-extrabold text-slate-900">🕒 Kế hoạch theo thời gian</h2>
+            <p class="text-[11px] text-slate-400">Trạng thái tự cập nhật theo task đã hoàn thành</p>
+          </div>
+          <div id="schedule-timeline" class="relative pl-6 border-l-2 border-slate-100 space-y-6 mt-5"></div>
+        </div>
+
+        <div class="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 shadow-sm">
+          <h2 class="text-base font-extrabold text-slate-900">📌 Dữ liệu đầu vào và giả định</h2>
+          <div id="assumption-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4"></div>
+        </div>
+      </section>
+
+      <aside class="lg:col-span-4 space-y-6">
+        <div id="blocker-card" class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm"></div>
+        <div id="event-card" class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm border-l-4 border-l-purple-500"></div>
+        <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+          <h2 class="text-sm font-extrabold text-slate-900">🛡️ Plan B nếu blocker chưa được xử lý</h2>
+          <div id="plan-b" class="mt-3 space-y-4 text-xs text-slate-600"></div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <div id="modal" class="hidden fixed inset-0 z-[60] bg-slate-900/60 backdrop-blur-sm p-4 items-center justify-center" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="bg-white rounded-2xl border border-slate-200 max-w-lg w-full p-6 shadow-2xl space-y-4">
+      <div class="flex justify-between gap-4">
+        <div><h2 id="modal-title" class="text-base font-extrabold text-slate-900"></h2><p id="modal-subtitle" class="text-xs text-slate-500 mt-1"></p></div>
+        <button type="button" data-action="close-modal" class="text-slate-400 hover:text-slate-700 text-xl font-bold" aria-label="Đóng">×</button>
+      </div>
+      <div id="task-modal-fields" class="space-y-4">
+        <div>
+          <label for="modal-status" class="text-xs font-bold text-slate-500">Trạng thái</label>
+          <select id="modal-status" class="mt-1 w-full border border-slate-200 rounded-lg p-2 text-sm bg-white focus:border-orange-500">
+            <option value="todo">Chưa bắt đầu</option><option value="in_progress">Đang thực hiện</option><option value="blocked">Đang bị kẹt</option><option value="done">Đã hoàn thành</option>
+          </select>
+        </div>
+        <div>
+          <div class="flex justify-between text-xs font-bold text-slate-500"><label for="modal-progress">Tiến độ</label><span id="modal-progress-label" class="text-orange-500">0%</span></div>
+          <input id="modal-progress" type="range" min="0" max="100" step="5" class="w-full accent-orange-500 mt-2">
+        </div>
+        <div><label for="modal-note" class="text-xs font-bold text-slate-500">Ghi chú hoặc blocker</label><textarea id="modal-note" rows="3" class="mt-1 w-full border border-slate-200 rounded-lg p-2.5 text-xs focus:border-orange-500"></textarea></div>
+      </div>
+      <div id="strategy-modal-fields" class="hidden space-y-3">
+        <label for="modal-strategy" class="text-xs font-bold text-slate-500">Điều chỉnh chiến lược</label>
+        <textarea id="modal-strategy" rows="5" class="w-full border border-slate-200 rounded-lg p-3 text-sm focus:border-orange-500"></textarea>
+        <p class="text-[11px] text-slate-400">Bản điều chỉnh được lưu tại trình duyệt và đồng bộ về trang tổng quan.</p>
+      </div>
+      <div class="flex justify-end gap-2">
+        <button type="button" data-action="close-modal" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2 rounded-lg text-xs font-bold border border-slate-200">Hủy</button>
+        <button type="button" data-action="save-modal" class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-xs font-bold">Lưu thay đổi</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    'use strict';
+
+    const STORAGE_KEY = 'vlearn-study-state-v2';
+    const DEFAULT_STATE = {
+      version: 2,
+      tasks: {
+        dailyStandup: { title: 'Nộp Daily Stand-up nhóm P-096', status: 'todo', progress: 0, deadline: '09:00 hôm nay', estimate: 10, read: false, note: '' },
+        preflight: { title: 'Xử lý lỗi preflight provider', status: 'blocked', progress: 30, deadline: null, estimate: 30, read: false, blocker: 'Lỗi preflight provider', note: 'Preflight provider chưa chạy thành công.' },
+        day4: { title: 'Hoàn thành bài thực hành Day 4', status: 'in_progress', progress: 80, deadline: '23:59 hôm nay', estimate: 60, read: false, note: 'Đã hoàn thành code nhưng vẫn cần xử lý preflight.' },
+        fileCheck: { title: 'Kiểm tra file nộp bài', status: 'todo', progress: 0 },
+        reflection: { title: 'Hoàn thành reflection', status: 'todo', progress: 0 },
+        canvas: { title: 'Hoàn thiện Canvas và chốt đề tài', status: 'in_progress', progress: 60 }
+      },
+      notifications: {
+        officeHour: { title: 'Office Hour – Tool Calling', time: '20:00–21:00 hôm nay', status: 'upcoming', read: false, interested: false, addedToPlan: false },
+        weeklySubmit: { title: 'Weekly Submit', time: 'Chưa xác định', status: 'needs_confirmation', progress: 40, read: false }
+      },
+      strategy: {
+        applied: false,
+        skipped: false,
+        summary: 'Hoàn thành Daily Stand-up trước, sau đó xử lý lỗi preflight vì đây là blocker của bài Day 4.',
+        steps: ['Nộp Daily Stand-up trước 09:00.', 'Dành 30 phút kiểm tra provider và model.', 'Nếu chưa xử lý được, chuẩn bị log lỗi.', 'Tham gia Office Hour lúc 20:00.', 'Kiểm tra file nộp bài trước 23:59.'],
+        updatedAt: null
+      }
+    };
+
+    function clone(value) { return JSON.parse(JSON.stringify(value)); }
+    function mergeState(saved) {
+      const base = clone(DEFAULT_STATE);
+      if (!saved || typeof saved !== 'object') return base;
+      return {
+        ...base,
+        ...saved,
+        tasks: Object.fromEntries(Object.entries(base.tasks).map(([key, item]) => [key, { ...item, ...((saved.tasks || {})[key] || {}) }])),
+        notifications: Object.fromEntries(
+          [...new Set([...Object.keys(base.notifications), ...Object.keys(saved.notifications || {})])]
+            .map((key) => [key, { ...(base.notifications[key] || {}), ...((saved.notifications || {})[key] || {}) }])
+        ),
+        strategy: { ...base.strategy, ...(saved.strategy || {}), steps: Array.isArray(saved.strategy?.steps) ? saved.strategy.steps : base.strategy.steps }
+      };
+    }
+    function loadState() {
+      try { return mergeState(JSON.parse(localStorage.getItem(STORAGE_KEY))); }
+      catch (error) { console.warn('Không thể đọc trạng thái:', error); return clone(DEFAULT_STATE); }
+    }
+
+    let state = loadState();
+    let modalContext = null;
+    let toastTimer = null;
+
+    function saveState() {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+      catch (error) { console.warn('Không thể lưu trạng thái:', error); }
+    }
+    function escapeHtml(value) {
+      return String(value ?? '').replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;');
+    }
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-message').textContent = message;
+      toast.classList.remove('hidden');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.add('hidden'), 3000);
+    }
+    function formatToday() {
+      return new Intl.DateTimeFormat('vi-VN', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }).format(new Date());
+    }
+    function statusLabel(status) {
+      return ({ todo: 'Chưa bắt đầu', in_progress: 'Đang thực hiện', blocked: 'Đang bị kẹt', done: 'Đã hoàn thành', upcoming: 'Sắp tới' })[status] || status;
+    }
+    function statusClass(status) {
+      if (status === 'done') return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+      if (status === 'blocked') return 'bg-rose-50 text-rose-700 border-rose-200';
+      if (status === 'in_progress') return 'bg-orange-50 text-orange-700 border-orange-200';
+      return 'bg-slate-100 text-slate-600 border-slate-200';
+    }
+
+    function activePriorityTasks() {
+      const tasks = [];
+      if (state.tasks.dailyStandup.status !== 'done') tasks.push({ key: 'dailyStandup', priority: 'Khẩn cấp', priorityClass: 'bg-red-100 text-red-700', borderClass: 'border-l-rose-500', reason: 'Deadline gần nhất', dependency: null });
+      if (state.tasks.preflight.status !== 'done') tasks.push({ key: 'preflight', priority: state.tasks.preflight.status === 'blocked' ? 'Đang bị kẹt' : 'Ưu tiên cao', priorityClass: 'bg-amber-100 text-amber-700', borderClass: 'border-l-amber-500', reason: 'Đang chặn bài Day 4', dependency: null });
+      if (state.tasks.day4.status !== 'done') tasks.push({ key: 'day4', priority: 'Quan trọng', priorityClass: 'bg-blue-100 text-blue-700', borderClass: 'border-l-blue-500', reason: 'Có deadline trong hôm nay', dependency: state.tasks.preflight.status !== 'done' ? 'Phụ thuộc Task xử lý preflight' : null });
+      return tasks;
+    }
+
+    function renderMetrics() {
+      const priorities = activePriorityTasks();
+      const blockerCount = state.tasks.preflight.status === 'blocked' ? 1 : 0;
+      const deadlines = [state.tasks.dailyStandup, state.tasks.day4].filter((task) => task.status !== 'done').length;
+      const supportCount = state.notifications.officeHour.addedToPlan || state.tasks.preflight.status === 'blocked' ? 1 : 0;
+      const metrics = [
+        { label: 'Task ưu tiên', value: priorities.length, desc: 'Cần chú ý hôm nay', color: 'text-slate-800' },
+        { label: 'Blocker', value: blockerCount, desc: blockerCount ? 'Đang chặn tiến trình' : 'Đã xử lý', color: blockerCount ? 'text-red-500' : 'text-emerald-600' },
+        { label: 'Deadline hôm nay', value: deadlines, desc: 'Chưa hoàn thành', color: 'text-amber-600' },
+        { label: 'Sự kiện hỗ trợ', value: supportCount, desc: 'Office Hour phù hợp', color: 'text-purple-600' }
+      ];
+      document.getElementById('metric-grid').innerHTML = metrics.map((metric) => `
+        <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+          <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block">${metric.label}</span>
+          <strong class="text-3xl font-extrabold ${metric.color} block mt-2">${metric.value}</strong>
+          <span class="text-[10px] text-slate-400 font-medium block mt-1">${metric.desc}</span>
+        </div>`).join('');
+    }
+
+    function renderSummary() {
+      document.getElementById('strategy-summary').textContent = state.strategy.summary;
+      document.getElementById('total-estimate').textContent = `${activePriorityTasks().reduce((total, item) => total + Number(state.tasks[item.key].estimate || 0), 0)} phút`;
+      document.getElementById('strategy-updated-at').textContent = state.strategy.updatedAt
+        ? `Cập nhật ${new Intl.DateTimeFormat('vi-VN', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' }).format(new Date(state.strategy.updatedAt))}`
+        : 'Chưa áp dụng';
+      const applyButton = document.getElementById('btn-apply-plan');
+      applyButton.textContent = state.strategy.applied ? '✓ Đã áp dụng kế hoạch' : 'Áp dụng kế hoạch';
+      applyButton.className = state.strategy.applied
+        ? 'bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-lg text-xs font-bold shadow-sm'
+        : 'bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-xs font-bold shadow-sm';
+    }
+
+    function renderGoalsAndReasons() {
+      const goalItems = [
+        { done: state.tasks.dailyStandup.status === 'done', text: 'Daily Stand-up đã được nộp trước 09:00.' },
+        { done: state.tasks.preflight.status === 'done', text: 'Blocker preflight đã xử lý hoặc có log lỗi đầy đủ.' },
+        { done: state.tasks.day4.status === 'done', text: 'Bài Day 4 đã kiểm tra và nộp trước 23:59.' }
+      ];
+      document.getElementById('end-of-day-goals').innerHTML = goalItems.map((item) => `<li class="flex gap-2"><span class="${item.done ? 'text-emerald-600' : 'text-slate-400'}">${item.done ? '✓' : '○'}</span><span>${escapeHtml(item.text)}</span></li>`).join('');
+
+      const reasons = [];
+      if (state.tasks.dailyStandup.status !== 'done') reasons.push('Daily Stand-up có deadline gần nhất: 09:00 hôm nay.');
+      if (state.tasks.preflight.status === 'blocked') reasons.push('Preflight đang bị kẹt và chặn bước hoàn thiện bài Day 4.');
+      if (state.tasks.day4.status !== 'done') reasons.push(`Bài Day 4 đã đạt ${state.tasks.day4.progress}%, nên có thể hoàn thiện trong hôm nay.`);
+      reasons.push('Office Hour lúc 20:00 có nội dung liên quan trực tiếp đến provider và Tool Calling.');
+      document.getElementById('strategy-reasons').innerHTML = reasons.map((reason) => `<li class="flex gap-2"><span class="text-orange-500">•</span><span>${escapeHtml(reason)}</span></li>`).join('');
+    }
+
+    function taskCard(item, index) {
+      const task = state.tasks[item.key];
+      const progress = Math.max(0, Math.min(100, Number(task.progress) || 0));
+      return `
+        <article class="bg-white border border-slate-200 border-l-4 ${item.borderClass} rounded-2xl p-5 shadow-sm space-y-3">
+          <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
+            <div class="space-y-1">
+              <span class="text-[10px] ${item.priorityClass} px-2 py-0.5 rounded font-bold uppercase">${escapeHtml(item.priority)}</span>
+              <h3 class="text-sm font-bold text-slate-800">Task ${index + 1} – ${escapeHtml(task.title)}</h3>
+            </div>
+            <span class="text-xs px-2.5 py-0.5 rounded-full font-bold border ${statusClass(task.status)}">${statusLabel(task.status)}</span>
+          </div>
+          ${item.key === 'preflight' && task.status === 'blocked' ? `<p class="text-xs text-slate-500">⚠️ Blocker: <span class="text-red-600 font-bold">${escapeHtml(task.blocker || 'Chưa mô tả')}</span></p>` : ''}
+          <div>
+            <div class="flex justify-between text-xs font-bold text-slate-600 mb-1"><span>Tiến độ</span><span class="text-orange-500">${progress}%</span></div>
+            <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden"><div class="bg-orange-500 h-full rounded-full" style="width:${progress}%"></div></div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-600">
+            ${task.deadline ? `<div>🕒 Hạn: <b class="text-slate-800">${escapeHtml(task.deadline)}</b></div>` : ''}
+            <div>⏱️ Dự kiến: <b class="text-slate-800">${task.estimate || 0} phút</b></div>
+            <div>🎯 Lý do: <b class="text-slate-800">${escapeHtml(item.reason)}</b></div>
+            ${item.dependency ? `<div>🔗 Phụ thuộc: <b class="text-slate-800">${escapeHtml(item.dependency)}</b></div>` : ''}
+          </div>
+          <div class="pt-3 border-t border-slate-100 flex flex-wrap gap-2 justify-end">
+            ${task.status !== 'done' ? `<button type="button" data-action="start-task" data-task="${item.key}" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-1.5 rounded-lg text-xs font-bold border border-slate-200">${task.status === 'todo' ? 'Bắt đầu' : 'Tiếp tục'}</button>` : ''}
+            ${task.status !== 'done' ? `<button type="button" data-action="open-task-modal" data-task="${item.key}" class="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold">Cập nhật tiến độ</button>` : ''}
+            ${task.status !== 'done' ? `<button type="button" data-action="complete-task" data-task="${item.key}" class="bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold">Đánh dấu hoàn thành</button>` : '<span class="text-xs text-emerald-700 font-bold">✓ Đã hoàn thành</span>'}
+          </div>
+        </article>`;
+    }
+
+    function renderTasks() {
+      const tasks = activePriorityTasks();
+      document.getElementById('priority-task-list').innerHTML = tasks.length
+        ? tasks.map(taskCard).join('')
+        : '<div class="bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-2xl p-6 text-sm font-semibold">🎉 Bạn đã hoàn thành toàn bộ nhiệm vụ ưu tiên hôm nay.</div>';
+    }
+
+    function renderSchedule() {
+      const entries = [
+        { time: '08:30–08:40', title: 'Hoàn thành Daily Stand-up', desc: 'Chuẩn bị nội dung báo cáo và gửi vào Discord.', task: 'dailyStandup', color: 'orange' },
+        { time: '08:40–09:10', title: 'Kiểm tra provider và model', desc: 'Rà soát .env, provider, model và chạy preflight.', task: 'preflight', color: 'amber' },
+        { time: '09:10–09:20', title: 'Chuẩn bị log lỗi', desc: 'Lưu log và ảnh chụp để trao đổi với TA nếu cần.', task: 'preflight', color: 'slate' },
+        { time: '20:00–21:00', title: 'Tham gia Office Hour', desc: 'Mang theo log lỗi, tên provider và model đang dùng.', task: null, color: 'purple' },
+        { time: '21:00–22:00', title: 'Hoàn thiện bài Day 4', desc: 'Tiếp tục phần còn lại sau khi blocker được xử lý.', task: 'day4', color: 'blue' },
+        { time: 'Trước 23:59', title: 'Kiểm tra và nộp bài', desc: 'Kiểm tra file, chạy lại luồng chính và nộp bài.', task: 'day4', color: 'emerald' }
+      ];
+      const colorClasses = {
+        orange: 'border-orange-500', amber: 'border-amber-500', slate: 'border-slate-300',
+        purple: 'border-purple-500', blue: 'border-blue-500', emerald: 'border-emerald-500'
+      };
+      document.getElementById('schedule-timeline').innerHTML = entries.map((entry) => {
+        const done = entry.task ? state.tasks[entry.task].status === 'done' : state.notifications.officeHour.addedToPlan;
+        const nodeClass = done ? 'border-emerald-500 bg-emerald-50' : `${colorClasses[entry.color] || 'border-slate-300'} bg-white`;
+        return `
+          <div class="relative">
+            <span class="absolute -left-[31px] top-1 h-4 w-4 rounded-full border-2 ${nodeClass}"></span>
+            <div class="flex flex-wrap items-center gap-2"><span class="text-xs font-bold ${done ? 'text-emerald-600' : 'text-slate-500'}">${escapeHtml(entry.time)}</span><span class="text-[10px] px-2 py-0.5 rounded-full font-bold ${done ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-500'}">${done ? 'Đã hoàn thành' : 'Theo kế hoạch'}</span></div>
+            <div class="text-sm font-semibold text-slate-800 mt-1">${escapeHtml(entry.title)}</div>
+            <p class="text-xs text-slate-500 mt-0.5">${escapeHtml(entry.desc)}</p>
+          </div>`;
+      }).join('');
+    }
+
+    function renderBlocker() {
+      const task = state.tasks.preflight;
+      const blocked = task.status === 'blocked';
+      document.getElementById('blocker-card').innerHTML = `
+        <div class="flex justify-between items-center gap-3">
+          <h2 class="text-sm font-extrabold text-slate-900">🚨 Blocker hiện tại</h2>
+          <span class="text-[10px] px-2 py-0.5 rounded font-bold border ${statusClass(task.status)}">${statusLabel(task.status)}</span>
+        </div>
+        <div class="mt-4">
+          <strong class="text-slate-800 text-sm block">${blocked ? escapeHtml(task.blocker || 'Preflight chưa chạy thành công') : 'Không còn blocker đang hoạt động'}</strong>
+          <p class="text-xs text-slate-500 leading-relaxed mt-1">${blocked ? 'Nguyên nhân cụ thể cần được xác nhận từ log lỗi. Hệ thống không tự suy đoán mã lỗi.' : 'Bạn có thể tiếp tục hoàn thiện và kiểm tra bài Day 4.'}</p>
+        </div>
+        ${blocked ? `<div class="mt-4 bg-slate-50 border border-slate-100 rounded-lg p-3"><p class="text-[10px] font-bold text-slate-400 uppercase">Log lỗi gần nhất</p><p class="text-xs text-slate-600 mt-1">${escapeHtml(task.note || 'Chưa có log được cung cấp')}</p></div>
+        <ol id="blocker-steps" class="text-xs text-slate-600 space-y-2 list-decimal pl-4 font-medium mt-4">
+          <li>Kiểm tra file <code class="bg-slate-50 border border-slate-100 rounded px-1 text-red-600">.env</code>.</li><li>Kiểm tra provider đang dùng.</li><li>Kiểm tra tên model.</li><li>Chạy lại preflight.</li><li>Lưu log lỗi chi tiết.</li><li>Đưa log tới Office Hour hoặc hỏi TA.</li>
+        </ol>
+        <div class="mt-4 flex gap-2"><button type="button" data-action="complete-task" data-task="preflight" class="flex-1 bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-lg text-xs font-bold">Đánh dấu đã xử lý</button><button type="button" data-action="copy-blocker-steps" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-2 rounded-lg text-xs font-bold border border-slate-200">Sao chép</button></div>` : ''}`;
+    }
+
+    function renderEvent() {
+      const event = state.notifications.officeHour;
+      document.getElementById('event-card').innerHTML = `
+        <div class="flex justify-between items-center gap-3"><h2 class="text-sm font-extrabold text-slate-900">📅 Sự kiện hỗ trợ</h2><span class="text-[10px] bg-purple-50 text-purple-700 border border-purple-200 px-2 py-0.5 rounded font-bold">Phù hợp: Cao</span></div>
+        <div class="mt-4"><strong class="text-slate-800 text-sm block">Office Hour – Tool Calling</strong><p class="text-xs text-slate-500 mt-1">🕒 ${escapeHtml(event.time)} trên Discord</p></div>
+        <p class="text-xs text-slate-600 leading-relaxed font-medium mt-3">Nội dung liên quan đến provider, model và Tool Calling, phù hợp với blocker hiện tại.</p>
+        <div class="mt-3 bg-purple-50/60 border border-purple-100 rounded-lg p-3"><p class="text-[10px] font-bold text-purple-700 uppercase">Cần chuẩn bị</p><ul class="text-xs text-slate-600 mt-2 space-y-1"><li>• Ảnh chụp lỗi và log preflight</li><li>• Provider và tên model đang dùng</li><li>• Nội dung .env đã che API key</li></ul></div>
+        <div class="mt-4 flex gap-2"><button type="button" data-action="add-event" class="flex-1 ${event.addedToPlan ? 'bg-emerald-500' : 'bg-purple-600 hover:bg-purple-700'} text-white py-2 rounded-lg text-xs font-bold">${event.addedToPlan ? '✓ Đã thêm vào kế hoạch' : 'Thêm vào kế hoạch'}</button><button type="button" data-action="toggle-interest" class="bg-slate-50 border border-slate-200 text-slate-600 hover:bg-slate-100 px-3 py-2 rounded-lg text-xs font-bold">${event.interested ? '⭐ Đã quan tâm' : '☆ Quan tâm'}</button></div>`;
+    }
+
+    function renderPlanBAndAssumptions() {
+      document.getElementById('plan-b').innerHTML = `
+        <div><h3 class="font-bold text-slate-700">Việc vẫn có thể tiếp tục</h3><ul class="mt-1 space-y-1"><li>• Hoàn thành phần không phụ thuộc preflight.</li><li>• Kiểm tra cấu trúc và tên file nộp.</li></ul></div>
+        <div><h3 class="font-bold text-slate-700">Bằng chứng cần chuẩn bị</h3><ul class="mt-1 space-y-1"><li>• Ảnh chụp màn hình.</li><li>• Log lỗi và các bước đã thử.</li></ul></div>
+        <div><h3 class="font-bold text-slate-700">Hành động cần hỗ trợ</h3><ul class="mt-1 space-y-1"><li>• Hỏi TA hoặc Mentor.</li><li>• Tham gia Office Hour đúng giờ.</li></ul></div>`;
+
+      document.getElementById('assumption-grid').innerHTML = `
+        <div class="bg-slate-50 border border-slate-100 rounded-xl p-4"><h3 class="text-xs font-bold text-slate-700">Dữ liệu đã xác nhận</h3><ul class="mt-2 text-xs text-slate-600 space-y-1"><li>• Daily Stand-up: ${escapeHtml(state.tasks.dailyStandup.deadline)}</li><li>• Day 4: ${escapeHtml(state.tasks.day4.deadline)}, tiến độ ${state.tasks.day4.progress}%</li><li>• Office Hour: ${escapeHtml(state.notifications.officeHour.time)}</li><li>• Blocker: ${escapeHtml(state.tasks.preflight.blocker || 'Đã xử lý')}</li></ul></div>
+        <div class="bg-amber-50/50 border border-amber-100 rounded-xl p-4"><h3 class="text-xs font-bold text-amber-800">Thông tin cần xác nhận</h3><ul class="mt-2 text-xs text-slate-600 space-y-1"><li>• Weekly Submit: ${escapeHtml(state.notifications.weeklySubmit.time)}</li><li>• Quỹ thời gian rảnh thực tế của sinh viên chưa được nhập.</li><li>• Nguyên nhân kỹ thuật cụ thể phải dựa trên log, không tự đoán.</li></ul></div>`;
+    }
+
+    function renderAll() {
+      document.getElementById('today-label').textContent = formatToday();
+      renderMetrics();
+      renderSummary();
+      renderGoalsAndReasons();
+      renderTasks();
+      renderSchedule();
+      renderBlocker();
+      renderEvent();
+      renderPlanBAndAssumptions();
+      saveState();
+    }
+
+    function openTaskModal(taskKey) {
+      const task = state.tasks[taskKey];
+      if (!task) return;
+      modalContext = { mode: 'task', taskKey };
+      document.getElementById('modal-title').textContent = 'Cập nhật tiến độ';
+      document.getElementById('modal-subtitle').textContent = task.title;
+      document.getElementById('task-modal-fields').classList.remove('hidden');
+      document.getElementById('strategy-modal-fields').classList.add('hidden');
+      document.getElementById('modal-status').value = task.status;
+      document.getElementById('modal-progress').value = task.progress || 0;
+      document.getElementById('modal-progress-label').textContent = `${task.progress || 0}%`;
+      document.getElementById('modal-note').value = task.blocker || task.note || '';
+      const modal = document.getElementById('modal');
+      modal.classList.remove('hidden'); modal.classList.add('flex');
+    }
+
+    function openStrategyModal() {
+      modalContext = { mode: 'strategy' };
+      document.getElementById('modal-title').textContent = 'Điều chỉnh chiến lược';
+      document.getElementById('modal-subtitle').textContent = 'Chỉnh nội dung để phù hợp với thời gian và cách học của bạn.';
+      document.getElementById('task-modal-fields').classList.add('hidden');
+      document.getElementById('strategy-modal-fields').classList.remove('hidden');
+      document.getElementById('modal-strategy').value = state.strategy.summary;
+      const modal = document.getElementById('modal');
+      modal.classList.remove('hidden'); modal.classList.add('flex');
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.add('hidden');
+      document.getElementById('modal').classList.remove('flex');
+      modalContext = null;
+    }
+
+    function saveModal() {
+      if (!modalContext) return;
+      if (modalContext.mode === 'strategy') {
+        const summary = document.getElementById('modal-strategy').value.trim();
+        if (!summary) { showToast('Chiến lược không được để trống.'); return; }
+        state.strategy.summary = summary;
+        state.strategy.applied = false;
+        state.strategy.skipped = false;
+        state.strategy.updatedAt = new Date().toISOString();
+        showToast('Đã lưu bản chiến lược điều chỉnh.');
+      } else {
+        const task = state.tasks[modalContext.taskKey];
+        const status = document.getElementById('modal-status').value;
+        task.status = status;
+        task.progress = status === 'done' ? 100 : Number(document.getElementById('modal-progress').value);
+        task.note = document.getElementById('modal-note').value.trim();
+        if (status === 'blocked') task.blocker = task.note || 'Blocker chưa được mô tả';
+        else delete task.blocker;
+        if (modalContext.taskKey === 'preflight' && status === 'done' && state.tasks.day4.status !== 'done') state.tasks.day4.status = 'in_progress';
+        showToast('Đã cập nhật tiến độ task.');
+      }
+      closeModal();
+      renderAll();
+    }
+
+    async function regenerateStrategy() {
+      const button = document.getElementById('btn-regenerate');
+      const oldText = button.textContent;
+      button.disabled = true;
+      button.textContent = 'Đang gọi AI...';
+      try {
+        const response = await fetch('/api/strategy', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            task_title: state.tasks.day4.title,
+            deadline: state.tasks.day4.deadline,
+            importance: 'high',
+            status: state.tasks.preflight.status === 'blocked' ? 'blocked' : state.tasks.day4.status,
+            blocker: state.tasks.preflight.status === 'blocked' ? state.tasks.preflight.blocker : null
+          })
+        });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+        if (typeof data.summary === 'string') state.strategy.summary = data.summary;
+        else if (typeof data.reason === 'string') state.strategy.summary = data.reason;
+        if (Array.isArray(data.steps) && data.steps.length) state.strategy.steps = data.steps;
+        state.strategy.updatedAt = new Date().toISOString();
+        showToast('Đã nhận gợi ý mới từ backend AI.');
+      } catch (error) {
+        console.warn('Không gọi được API AI:', error);
+        showToast('API AI chưa sẵn sàng. Đang giữ gợi ý hiện tại làm phương án dự phòng.');
+      } finally {
+        button.disabled = false;
+        button.textContent = oldText;
+        renderAll();
+      }
+    }
+
+    document.addEventListener('input', (event) => {
+      if (event.target.id === 'modal-progress') document.getElementById('modal-progress-label').textContent = `${event.target.value}%`;
+    });
+
+    document.addEventListener('click', async (event) => {
+      const target = event.target.closest('[data-action]');
+      if (!target) return;
+      const action = target.dataset.action;
+
+      if (action === 'apply-plan') {
+        state.strategy.applied = true; state.strategy.skipped = false; state.strategy.updatedAt = new Date().toISOString(); showToast('Đã áp dụng kế hoạch.');
+      }
+      if (action === 'adjust-plan') { openStrategyModal(); return; }
+      if (action === 'skip-plan') {
+        state.strategy.applied = false; state.strategy.skipped = true; state.strategy.updatedAt = new Date().toISOString(); showToast('Đã bỏ qua kế hoạch hiện tại.');
+      }
+      if (action === 'regenerate-ai') { await regenerateStrategy(); return; }
+      if (action === 'start-task') {
+        const task = state.tasks[target.dataset.task];
+        if (task.status === 'todo') task.status = 'in_progress';
+        showToast('Đã bắt đầu task.');
+      }
+      if (action === 'complete-task') {
+        const task = state.tasks[target.dataset.task];
+        task.status = 'done'; task.progress = 100; delete task.blocker;
+        if (target.dataset.task === 'preflight' && state.tasks.day4.status !== 'done') state.tasks.day4.status = 'in_progress';
+        showToast('Đã đánh dấu hoàn thành.');
+      }
+      if (action === 'open-task-modal') { openTaskModal(target.dataset.task); return; }
+      if (action === 'close-modal') { closeModal(); return; }
+      if (action === 'save-modal') { saveModal(); return; }
+      if (action === 'add-event') {
+        state.notifications.officeHour.addedToPlan = !state.notifications.officeHour.addedToPlan;
+        showToast(state.notifications.officeHour.addedToPlan ? 'Đã thêm Office Hour vào kế hoạch.' : 'Đã bỏ Office Hour khỏi kế hoạch.');
+      }
+      if (action === 'toggle-interest') {
+        state.notifications.officeHour.interested = !state.notifications.officeHour.interested;
+        showToast(state.notifications.officeHour.interested ? 'Đã đánh dấu quan tâm.' : 'Đã bỏ quan tâm.');
+      }
+      if (action === 'copy-blocker-steps') {
+        const text = '1. Kiểm tra file .env\n2. Kiểm tra provider\n3. Kiểm tra tên model\n4. Chạy lại preflight\n5. Lưu log lỗi\n6. Hỏi TA hoặc tham gia Office Hour';
+        try { await navigator.clipboard.writeText(text); showToast('Đã sao chép hướng xử lý.'); }
+        catch { showToast('Không thể sao chép tự động. Hãy sao chép thủ công.'); }
+      }
+      renderAll();
+    });
+
+    window.addEventListener('storage', (event) => {
+      if (event.key === STORAGE_KEY) { state = loadState(); renderAll(); }
+    });
+
+    renderAll();
+  </script>
+</body>
+</html>

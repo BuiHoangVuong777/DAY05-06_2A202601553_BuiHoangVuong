@@ -1,51 +1,71 @@
 from __future__ import annotations
 
-import os
-from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
+from fastapi import FastAPI, HTTPException
+from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel, Field
 
-HOST = "127.0.0.1"
-PORT = 8000
 
-# Thư mục chứa server.py, index.html, styles.css và public/
 BASE_DIR = Path(__file__).resolve().parent
+FRONTEND_DIR = BASE_DIR / "frontend"
+
+app = FastAPI(
+    title="AI Study Progress Assistant",
+    version="1.0.0",
+)
 
 
-class NoCacheRequestHandler(SimpleHTTPRequestHandler):
-    """Phục vụ file HTML/CSS/JS và tắt cache khi phát triển."""
-
-    def end_headers(self) -> None:
-        self.send_header(
-            "Cache-Control",
-            "no-store, no-cache, must-revalidate, max-age=0",
-        )
-        super().end_headers()
+class StrategyRequest(BaseModel):
+    task_title: str = Field(min_length=1)
+    deadline: str | None = None
+    importance: str = "medium"
+    status: str = "not_started"
+    blocker: str | None = None
 
 
-def main() -> None:
-    # Đảm bảo server luôn phục vụ file bên trong thư mục codebase
-    os.chdir(BASE_DIR)
+@app.get("/api/health")
+def health_check() -> dict[str, str]:
+    return {"status": "ok"}
 
-    server = ThreadingHTTPServer(
-        (HOST, PORT),
-        NoCacheRequestHandler,
-    )
 
-    print("=" * 60)
-    print("AI Study Progress Assistant")
-    print(f"Đang phục vụ thư mục: {BASE_DIR}")
-    print(f"Mở trình duyệt: http://{HOST}:{PORT}")
-    print("Nhấn Ctrl + C để dừng server")
-    print("=" * 60)
-
+@app.post("/api/strategy")
+def create_strategy(request: StrategyRequest) -> dict:
     try:
-        server.serve_forever()
-    except KeyboardInterrupt:
-        print("\nĐang dừng server...")
-    finally:
-        server.server_close()
+        # Sau này thay phần mock này bằng:
+        # from app.services.ai_service import generate_strategy
+        # return generate_strategy(request.model_dump())
+
+        priority_reason = "Task có mức ưu tiên thông thường."
+
+        if request.blocker:
+            priority_reason = (
+                f"Cần xử lý blocker '{request.blocker}' trước "
+                "vì nó đang cản trở tiến độ."
+            )
+        elif request.importance == "high":
+            priority_reason = "Task có mức độ quan trọng cao."
+
+        return {
+            "task": request.task_title,
+            "priority": "high" if request.blocker else request.importance,
+            "reason": priority_reason,
+            "steps": [
+                "Kiểm tra trạng thái và thông tin task.",
+                "Xử lý blocker trước khi thêm tính năng mới.",
+                "Cập nhật tiến độ sau khi hoàn thành.",
+            ],
+        }
+    except Exception as exc:
+        raise HTTPException(
+            status_code=500,
+            detail="Không thể tạo chiến lược.",
+        ) from exc
 
 
-if __name__ == "__main__":
-    main()
+# Đặt sau các API route để /api/... được xử lý trước.
+app.mount(
+    "/",
+    StaticFiles(directory=FRONTEND_DIR, html=True),
+    name="frontend",
+)

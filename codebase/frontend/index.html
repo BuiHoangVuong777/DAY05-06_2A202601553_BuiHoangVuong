@@ -765,24 +765,26 @@
                   </div>
                 </div>
 
-                <div class="flex gap-2">
+                <div class="flex flex-col gap-2">
+                  <div class="flex gap-2">
+                    <button 
+                      onClick={() => { setAppliedPlan(true); triggerToast("Đã áp dụng kế hoạch đề xuất"); }}
+                      class="flex-1 bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-lg text-xs font-bold transition shadow-sm"
+                    >
+                      {appliedPlan ? 'Đã áp dụng' : 'Áp dụng kế hoạch'}
+                    </button>
+                    <button 
+                      onClick={() => { setAppliedPlan(false); triggerToast("Đã bỏ qua gợi ý"); }}
+                      class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-2 rounded-lg text-xs font-bold transition border border-slate-200"
+                    >
+                      Bỏ qua
+                    </button>
+                  </div>
                   <button 
-                    onClick={() => { setAppliedPlan(true); triggerToast("Đã áp dụng kế hoạch đề xuất"); }}
-                    class="flex-1 bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-lg text-xs font-bold transition shadow-sm"
+                    onClick={() => { window.location.href = "/strategy.html"; }}
+                    class="w-full bg-amber-500 hover:bg-amber-600 text-white py-2 rounded-lg text-xs font-bold transition shadow-sm text-center"
                   >
-                    {appliedPlan ? 'Đã áp dụng' : 'Áp dụng kế hoạch'}
-                  </button>
-                  <button 
-                    onClick={() => triggerToast("Chức năng điều chỉnh đang phát triển")}
-                    class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-2 rounded-lg text-xs font-bold transition border border-slate-200"
-                  >
-                    Điều chỉnh
-                  </button>
-                  <button 
-                    onClick={() => { setAppliedPlan(false); triggerToast("Đã bỏ qua gợi ý"); }}
-                    class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-2 rounded-lg text-xs font-bold transition border border-slate-200"
-                  >
-                    Bỏ qua
+                    Xem chi tiết chiến lược
                   </button>
                 </div>
               </div>
