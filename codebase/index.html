@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VLearn - AI Study Progress Assistant</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            vlearn: {
+              50: '#fffbeb',
+              100: '#fef3c7',
+              500: '#f97316', // Orange highlight
+              600: '#ea580c',
+              700: '#c2410c',
+              800: '#9a3412',
+              900: '#7c2d12',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- React & ReactDOM CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  
+  <!-- Babel Compiler for JSX -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #f8fafc;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background-color: #cbd5e1;
+      border-radius: 20px;
+    }
+  </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen">
+  <div id="root"></div>
+
+  <!-- React App Code -->
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    // Initial Mock Data
+    const initialWeeks = [
+      {
+        id: 1,
+        week: "Tuần 1",
+        date: "23/07/2026",
+        title: "Kick-off & lập đội",
+        status: "completed", // completed, current, upcoming
+        milestone: "Lập nhóm & Đăng ký",
+        desc: "Khởi động chương trình, giới thiệu thể lệ, ghép đội 4-5 người và nhận tài khoản VLearn/Discord.",
+        tasks: ["Tham gia Kick-off", "Ghép nhóm", "Tạo kênh Discord nhóm"]
+      },
+      {
+        id: 2,
+        week: "Tuần 2",
+        date: "Hiện tại",
+        title: "GATE 1 – Chốt đề tài",
+        subtitle: "Khảo sát, phân tích đề bài và thu thập thông tin",
+        status: "current",
+        milestone: "GATE 1 - Chốt đề tài",
+        progress: 60,
+        desc: "Thực hiện khảo sát tối thiểu 20 người dùng, hoàn thành Problem Canvas và nộp spec.md trước 23:59.",
+        tasks: ["Khảo sát 20 HV", "Viết Spec nháp", "Chốt đề tài với TA"]
+      },
+      {
+        id: 3,
+        week: "Tuần 3",
+        date: "Sắp tới",
+        title: "Xây dựng MVP đầu tiên",
+        status: "upcoming",
+        milestone: "CP2 - Bấm được",
+        desc: "Dựng khung luồng chính của ứng dụng (Sketch/Mock), đảm bảo có ít nhất 1 lệnh gọi AI chạy thực tế.",
+        tasks: ["Dựng UI nháp", "Call API Gemini", "Test luồng cơ bản"]
+      },
+      {
+        id: 4,
+        week: "Tuần 4",
+        date: "Sắp tới",
+        title: "GATE 2 – MVP",
+        subtitle: "Tối ưu và cải thiện dựa trên feedback",
+        status: "upcoming",
+        milestone: "GATE 2 - MVP Review",
+        desc: "Chạy thử nghiệm nội bộ, thu thập feedback, sửa lỗi preflight/blocker và tối ưu độ tin cậy AI.",
+        tasks: ["User Testing v1", "Sửa lỗi preflight", "Đo lường Quality Bar"]
+      },
+      {
+        id: 5,
+        week: "Tuần 5",
+        date: "Sắp tới",
+        title: "Hoàn thiện sản phẩm",
+        subtitle: "Nộp hồ sơ Demo Day",
+        status: "upcoming",
+        milestone: "Nộp hồ sơ Demo Day",
+        desc: "Đóng gói mã nguồn, viết báo cáo kịch bản lỗi, hoàn thành slide thuyết trình 6 trang.",
+        tasks: ["Viết Slide nộp", "Chạy Unit Test", "Đóng gói mã nguồn"]
+      },
+      {
+        id: 6,
+        week: "Tuần 6",
+        date: "01/09/2026",
+        title: "Demo Day",
+        status: "upcoming",
+        milestone: "Demo Day Pitching",
+        desc: "Thuyết trình sản phẩm live trước Hội đồng giám khảo, chạy thử case ngẫu nhiên và nhận điểm tốt nghiệp.",
+        tasks: ["Live Demo", "Q&A với Judge", "Nhận phản hồi chung cuộc"]
+      }
+    ];
+
+    const initialNotifications = [
+      {
+        id: "n-1",
+        source: "Discord",
+        type: "Daily Stand-up",
+        title: "Nộp Daily Stand-up nhóm P-096",
+        time: "09:00 hôm nay",
+        status: "todo", // todo, blocked, upcoming, needs_confirmation, done, interested
+        details: "Nộp báo cáo tình hình dự án tại kênh Discord #daily-standup trước 9 giờ sáng."
+      },
+      {
+        id: "n-2",
+        source: "Discord",
+        type: "Office Hour",
+        title: "Office Hour – Tool Calling",
+        time: "20:00–21:00 hôm nay",
+        status: "upcoming",
+        details: "Buổi hướng dẫn nâng cao về cách xử lý callback và cấu hình JSON schema."
+      },
+      {
+        id: "n-3",
+        source: "VLearn",
+        type: "Bài Day 4",
+        title: "Hoàn thành bài thực hành Day 4",
+        time: "23:59 hôm nay",
+        status: "blocked",
+        progress: 80,
+        blocker: "Lỗi preflight provider",
+        details: "Hoàn thành code tích hợp API và đẩy dữ liệu lên pipeline VLearn."
+      },
+      {
+        id: "n-4",
+        source: "Discord",
+        type: "Mentor Duty",
+        title: "Mentor Duty Zone 3",
+        time: "19:00 ngày mai",
+        status: "upcoming",
+        details: "Lịch review 1-1 với Mentor để giải quyết blocker dự án tại phòng Zoom Zone 3."
+      },
+      {
+        id: "n-5",
+        source: "Discord",
+        type: "Weekly Submit",
+        title: "Weekly Submit",
+        time: "Chưa xác định",
+        status: "needs_confirmation",
+        details: "Không tìm thấy ngày và giờ nộp cụ thể. Hệ thống chưa tạo lời nhắc để tránh nhắc sai."
+      }
+    ];
+
+    function App() {
+      const [notifications, setNotifications] = useState(initialNotifications);
+      const [weeks, setWeeks] = useState(initialWeeks);
+      const [selectedWeek, setSelectedWeek] = useState(weeks.find(w => w.status === 'current') || weeks[1]);
+      const [activeFilter, setActiveFilter] = useState("Tất cả");
+      const [showModal, setShowModal] = useState(false);
+      const [currentEditingTask, setCurrentEditingTask] = useState(null);
+      
+      // Modal inputs
+      const [modalProgress, setModalProgress] = useState(50);
+      const [modalStatus, setModalStatus] = useState("todo");
+      const [modalDesc, setModalDesc] = useState("");
+
+      // App-wide toast
+      const [toast, setToast] = useState(null);
+      const [appliedPlan, setAppliedPlan] = useState(false); // Applied integrated plan
+
+      const triggerToast = (msg) => {
+        setToast(msg);
+        setTimeout(() => setToast(null), 3000);
+      };
+
+      // Handle Task/Notification Action
+      const handleAction = (id, newStatus) => {
+        setNotifications(prev => prev.map(n => n.id === id ? { ...n, status: newStatus } : n));
+        triggerToast("Cập nhật trạng thái thành công!");
+      };
+
+      // Open Checkin Modal
+      const openCheckin = (task) => {
+        setCurrentEditingTask(task);
+        setModalProgress(task.progress || 0);
+        setModalStatus(task.status);
+        setModalDesc(task.blocker || "");
+        setShowModal(true);
+      };
+
+      // Save Checkin Modal
+      const saveCheckin = () => {
+        setNotifications(prev => prev.map(n => {
+          if (n.id === currentEditingTask.id) {
+            const updated = {
+              ...n,
+              status: modalStatus,
+              progress: Number(modalProgress)
+            };
+            if (modalStatus === 'blocked') {
+              updated.blocker = modalDesc || "Lỗi cấu hình API";
+            } else {
+              delete updated.blocker;
+            }
+            if (modalStatus === 'done') {
+              updated.progress = 100;
+            }
+            return updated;
+          }
+          return n;
+        }));
+        
+        setShowModal(false);
+        triggerToast("Đã lưu tiến độ học tập!");
+
+        if (modalStatus === 'blocked') {
+          triggerToast("Phát hiện blocker: " + (modalDesc || "Lỗi preflight provider"));
+        }
+      };
+
+      // Confirm Deadline Form simulated
+      const [deadlineInputId, setDeadlineInputId] = useState(null);
+      const [newDeadlineText, setNewDeadlineText] = useState("23:59 Chủ Nhật");
+      const confirmDeadline = (id) => {
+        setNotifications(prev => prev.map(n => n.id === id ? { ...n, status: "todo", time: newDeadlineText } : n));
+        setDeadlineInputId(null);
+        triggerToast("Đã xác nhận deadline: " + newDeadlineText);
+      };
+
+      // Active tabs on mobile view
+      const [mobileTab, setMobileTab] = useState("notif");
+
+      // Dynamic rule calculations
+      // Tasks to show in "Việc cần làm hôm nay" (max 3)
+      const getTodayTasks = () => {
+        const list = [];
+        const standup = notifications.find(n => n.id === 'n-1');
+        if (standup && standup.status !== 'done') {
+          list.push({
+            id: 'n-1',
+            title: "Nộp Daily Stand-up",
+            time: "09:00",
+            status: standup.status,
+            reason: "Deadline gần nhất và chưa hoàn thành"
+          });
+        }
+        const day4 = notifications.find(n => n.id === 'n-3');
+        if (day4 && day4.status !== 'done') {
+          list.push({
+            id: 'n-3',
+            title: "Xử lý lỗi preflight",
+            time: "20:00 OH",
+            status: "Đang bị kẹt",
+            reason: "Đang chặn tiến độ bài Day 4"
+          });
+          list.push({
+            id: 'n-3_full',
+            title: "Hoàn thành bài Day 4",
+            time: "23:59",
+            status: `Đang làm (${day4.progress || 80}%)`,
+            reason: "Hạn chót 23:59 hôm nay"
+          });
+        }
+        return list.slice(0, 3);
+      };
+
+      // Filtered notifications
+      const getFilteredNotifs = () => {
+        return notifications.filter(n => {
+          if (activeFilter === "Tất cả") return true;
+          if (activeFilter === "Discord") return n.source === "Discord";
+          if (activeFilter === "VLearn") return n.source === "VLearn";
+          if (activeFilter === "Hôm nay") return n.time.includes("hôm nay");
+          if (activeFilter === "Chưa đọc") return n.status === "todo" || n.status === "blocked" || n.status === "needs_confirmation";
+          return true;
+        });
+      };
+
+      const day4Task = notifications.find(n => n.id === 'n-3') || { progress: 80 };
+      const weeklySubmitTask = notifications.find(n => n.id === 'n-5') || { progress: 40 };
+
+      // Helper status badges styling
+      const getStatusStyle = (status) => {
+        switch(status) {
+          case 'completed':
+          case 'done':
+          case 'interested':
+            return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+          case 'current':
+          case 'in_progress':
+            return 'bg-orange-50 text-orange-700 border-orange-200';
+          case 'blocked':
+            return 'bg-rose-50 text-rose-700 border-rose-200 animate-pulse';
+          case 'needs_confirmation':
+            return 'bg-purple-50 text-purple-700 border-purple-200';
+          default:
+            return 'bg-slate-100 text-slate-600 border-slate-200';
+        }
+      };
+
+      const getStatusLabel = (status) => {
+        switch(status) {
+          case 'completed':
+          case 'done':
+            return 'Đã hoàn thành';
+          case 'current':
+          case 'in_progress':
+            return 'Đang thực hiện';
+          case 'blocked':
+            return 'Đang bị kẹt';
+          case 'needs_confirmation':
+            return 'Cần xác nhận';
+          case 'interested':
+            return 'Đã quan tâm';
+          case 'upcoming':
+            return 'Sắp tới';
+          default:
+            return 'Chưa làm';
+        }
+      };
+
+      return (
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+          
+          {/* TOAST NOTIFICATION */}
+          {toast && (
+            <div class="fixed bottom-5 right-5 z-50 bg-slate-900 text-white px-4 py-3 rounded-lg shadow-xl flex items-center space-x-2 border border-slate-700 animate-bounce">
+              <span class="text-orange-400">✨</span>
+              <span class="text-sm font-semibold">{toast}</span>
+            </div>
+          )}
+
+          {/* 1. HEADER VLEARN */}
+          <header class="bg-white border border-slate-200 rounded-xl px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
+            <div class="flex items-center space-x-3">
+              <div class="h-10 w-10 bg-gradient-to-tr from-orange-500 to-amber-400 rounded-lg flex items-center justify-center text-white font-extrabold text-xl shadow-md shadow-orange-500/20">
+                V
+              </div>
+              <div>
+                <h1 class="text-lg font-bold text-slate-900 tracking-tight">AI Study Progress Assistant</h1>
+                <p class="text-xs text-slate-500 font-medium">Bản tin học tập VLearn Ecosystem</p>
+              </div>
+            </div>
+            
+            <div class="flex items-center space-x-4">
+              <div class="text-right hidden md:block">
+                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Hôm nay</p>
+                <p class="text-sm font-bold text-slate-700">30 Tháng 7, 2026</p>
+              </div>
+              <div class="h-10 w-px bg-slate-200 hidden md:block"></div>
+              
+              <div class="flex items-center space-x-3 bg-slate-50 border border-slate-100 rounded-lg p-1.5 pr-3">
+                <div class="h-8 w-8 bg-amber-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                  P
+                </div>
+                <div class="text-left">
+                  <p class="text-xs font-bold text-slate-700">Phong 👋</p>
+                  <p class="text-[10px] text-amber-600 font-semibold">Zone 3 Student</p>
+                </div>
+              </div>
+            </div>
+          </header>
+
+          {/* 2. MASTER TIMELINE */}
+          <section class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-6">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <div>
+                <h2 class="text-lg font-extrabold text-slate-900 flex items-center gap-2">
+                  <span class="h-2 w-2 rounded-full bg-orange-500"></span>
+                  Lộ trình 6 tuần (Master Timeline)
+                </h2>
+                <p class="text-sm text-slate-500">Hành trình từ Kick-off lớp thực chiến đến Demo Day tốt nghiệp</p>
+              </div>
+              
+              <div class="flex items-center gap-3">
+                <div class="text-right">
+                  <span class="text-xs text-slate-400 font-semibold">Tiến độ tuần hiện tại: </span>
+                  <span class="text-xs font-bold text-orange-600">60%</span>
+                </div>
+                <button 
+                  onClick={() => triggerToast("Đang hiển thị công việc chi tiết của Tuần 2")}
+                  class="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition shadow-sm"
+                >
+                  Xem việc tuần này
+                </button>
+              </div>
+            </div>
+
+            {/* Horizontal Timeline Grid */}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 relative">
+              {weeks.map((w, index) => {
+                const isActive = selectedWeek.id === w.id;
+                return (
+                  <div 
+                    key={w.id}
+                    onClick={() => setSelectedWeek(w)}
+                    class={`p-4 rounded-xl border transition cursor-pointer flex flex-col justify-between min-h-[140px] relative ${
+                      isActive 
+                        ? 'border-orange-500 bg-orange-50/50 shadow-sm' 
+                        : 'border-slate-100 hover:border-slate-300 bg-slate-50/30'
+                    }`}
+                  >
+                    <div class="space-y-2">
+                      <div class="flex justify-between items-start">
+                        <span class="text-xs font-extrabold text-slate-400 uppercase">{w.week}</span>
+                        <span class={`text-[10px] px-2 py-0.5 rounded-full font-bold border ${getStatusStyle(w.status)}`}>
+                          {getStatusLabel(w.status)}
+                        </span>
+                      </div>
+                      
+                      <div class="space-y-1">
+                        <h4 class="text-sm font-bold text-slate-800 line-clamp-1">{w.title}</h4>
+                        {w.subtitle && <p class="text-[11px] text-slate-500 line-clamp-1">{w.subtitle}</p>}
+                      </div>
+                    </div>
+
+                    <div class="pt-4 border-t border-slate-100 mt-2 flex justify-between items-center text-[10px] text-slate-500 font-medium">
+                      <span>{w.date}</span>
+                      {w.status === 'completed' && <span class="text-emerald-600 font-semibold flex items-center">✓ Xong</span>}
+                      {w.status === 'current' && <span class="text-orange-600 font-bold">● Đang học</span>}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+
+            {/* Selected Week Detail Panel */}
+            <div class="bg-slate-50/50 border border-slate-100 rounded-xl p-4 grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div>
+                <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wide">Chi tiết mốc {selectedWeek.week}</h4>
+                <h3 class="text-base font-bold text-slate-800 mt-1">{selectedWeek.title}</h3>
+                <p class="text-xs text-slate-500 mt-2 leading-relaxed">{selectedWeek.desc}</p>
+              </div>
+
+              <div>
+                <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wide">Cột mốc quan trọng</h4>
+                <div class="inline-flex items-center space-x-2 bg-amber-50 text-amber-800 border border-amber-200 px-3 py-1.5 rounded-lg text-xs font-semibold mt-2">
+                  <span>🎯</span>
+                  <span>{selectedWeek.milestone}</span>
+                </div>
+              </div>
+
+              <div>
+                <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wide">Nhiệm vụ cần hoàn thành</h4>
+                <div class="space-y-1.5 mt-2">
+                  {selectedWeek.tasks.map((task, i) => (
+                    <div key={i} class="flex items-center space-x-2 text-xs text-slate-600">
+                      <span class="text-orange-500">•</span>
+                      <span>{task}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* RESPONSIVE LAYOUT SWITCHER FOR MOBILE */}
+          <div class="block lg:hidden flex border-b border-slate-200">
+            <button 
+              onClick={() => setMobileTab("notif")}
+              class={`flex-1 text-center py-3 font-bold text-sm border-b-2 transition ${mobileTab === 'notif' ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-500'}`}
+            >
+              📢 Thông báo ({notifications.length})
+            </button>
+            <button 
+              onClick={() => setMobileTab("plan")}
+              class={`flex-1 text-center py-3 font-bold text-sm border-b-2 transition ${mobileTab === 'plan' ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-500'}`}
+            >
+              📋 Kế hoạch của tôi
+            </button>
+          </div>
+
+          {/* 3. DASHBOARD TWO COLUMNS */}
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            {/* LEFT COLUMN: NOTIFICATIONS (55% / 7 cols) */}
+            <div class={`lg:col-span-7 space-y-4 ${mobileTab === 'notif' ? 'block' : 'hidden lg:block'}`}>
+              <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                  <h3 class="text-base font-extrabold text-slate-900">Thông báo từ VLearn và Discord</h3>
+                  <p class="text-xs text-slate-500">Cập nhật thời gian thực từ các kênh học tập chính thức</p>
+                </div>
+                
+                {/* Filters */}
+                <div class="flex flex-wrap gap-1">
+                  {["Tất cả", "Discord", "VLearn", "Hôm nay", "Chưa đọc"].map(filter => (
+                    <button
+                      key={filter}
+                      onClick={() => setActiveFilter(filter)}
+                      class={`px-2.5 py-1 rounded-md text-xs font-bold border transition ${
+                        activeFilter === filter
+                          ? 'bg-orange-500 border-orange-500 text-white shadow-sm'
+                          : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+                      }`}
+                    >
+                      {filter}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Notification Cards */}
+              <div class="space-y-3">
+                {getFilteredNotifs().map(n => {
+                  const hasShortSug = n.status === 'blocked' || n.time.includes("hôm nay") || n.status === 'needs_confirmation';
+                  return (
+                    <div 
+                      key={n.id} 
+                      class={`bg-white border rounded-xl p-5 shadow-sm space-y-3 transition hover:shadow-md relative overflow-hidden ${
+                        n.source === 'Discord' ? 'border-l-4 border-l-indigo-500' : 'border-l-4 border-l-emerald-500'
+                      }`}
+                    >
+                      {/* Card Header info */}
+                      <div class="flex justify-between items-center">
+                        <div class="flex items-center space-x-2">
+                          <span class={`text-[10px] font-bold px-2 py-0.5 rounded-md ${
+                            n.source === 'Discord' ? 'bg-indigo-50 text-indigo-700' : 'bg-emerald-50 text-emerald-700'
+                          }`}>
+                            {n.source}
+                          </span>
+                          <span class="text-xs font-extrabold text-slate-400">{n.type}</span>
+                        </div>
+                        
+                        <span class={`text-xs px-2 py-0.5 rounded-full font-bold border ${getStatusStyle(n.status)}`}>
+                          {getStatusLabel(n.status)}
+                        </span>
+                      </div>
+
+                      {/* Title & Details */}
+                      <div>
+                        <h4 class="text-sm font-bold text-slate-800">{n.title}</h4>
+                        <p class="text-xs text-slate-500 mt-1">{n.details}</p>
+                      </div>
+
+                      {/* Time info and stats */}
+                      <div class="flex items-center space-x-4 text-[11px] text-slate-400 font-semibold">
+                        <span>🕒 {n.time}</span>
+                        {n.progress !== undefined && <span>📈 Tiến độ: {n.progress}%</span>}
+                      </div>
+
+                      {/* Optional short suggestions */}
+                      {hasShortSug && (
+                        <div class="bg-amber-50/50 border-l-2 border-l-amber-500 rounded p-2.5 text-xs text-amber-900 leading-relaxed font-medium">
+                          {n.status === 'blocked' && `⚠️ Blocker: ${n.blocker}. Hãy tham gia Office Hour lúc 20:00 để Mentor gỡ rối.`}
+                          {n.status === 'todo' && `⚡ Deadline gần kề! Hoàn thành ngay trước khi hết hạn.`}
+                          {n.status === 'needs_confirmation' && `📅 Chưa nhận diện được ngày nộp bài. Xác nhận ngay để tránh nhắc nhầm.`}
+                        </div>
+                      )}
+
+                      {/* Interactive Buttons */}
+                      <div class="pt-3 border-t border-slate-100 flex flex-wrap gap-2 justify-end">
+                        {n.id === 'n-1' && n.status !== 'done' && (
+                          <button 
+                            onClick={() => handleAction(n.id, "done")}
+                            class="bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition"
+                          >
+                            Đánh dấu hoàn thành
+                          </button>
+                        )}
+                        {n.id === 'n-2' && (
+                          <button 
+                            onClick={() => handleAction(n.id, n.status === 'interested' ? 'upcoming' : 'interested')}
+                            class={`${n.status === 'interested' ? 'bg-slate-200' : 'bg-orange-500 text-white'} px-3 py-1.5 rounded-lg text-xs font-bold transition`}
+                          >
+                            {n.status === 'interested' ? 'Đã quan tâm ⭐' : 'Quan tâm'}
+                          </button>
+                        )}
+                        {n.id === 'n-3' && (
+                          <button 
+                            onClick={() => openCheckin(n)}
+                            class="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition"
+                          >
+                            Cập nhật tiến độ
+                          </button>
+                        )}
+                        {n.id === 'n-5' && (
+                          <>
+                            {deadlineInputId === n.id ? (
+                              <div class="flex items-center space-x-1">
+                                <input 
+                                  type="text" 
+                                  value={newDeadlineText}
+                                  onChange={(e) => setNewDeadlineText(e.target.value)}
+                                  class="border border-slate-300 rounded px-2 py-1 text-xs outline-none w-32"
+                                />
+                                <button 
+                                  onClick={() => confirmDeadline(n.id)}
+                                  class="bg-emerald-500 text-white px-2 py-1 rounded text-xs font-bold"
+                                >
+                                  Lưu
+                                </button>
+                              </div>
+                            ) : (
+                              <button 
+                                onClick={() => setDeadlineInputId(n.id)}
+                                class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition"
+                              >
+                                Nhập deadline
+                              </button>
+                            )}
+                          </>
+                        )}
+                        <button 
+                          onClick={() => triggerToast("Đang mở liên kết nguồn học tập/Discord...")}
+                          class="bg-slate-50 border border-slate-200 text-slate-600 px-3 py-1.5 rounded-lg text-xs font-bold transition hover:bg-slate-100"
+                        >
+                          Xem nguồn
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* RIGHT COLUMN: STUDY ASSISTANT (45% / 5 cols) */}
+            <div class={`lg:col-span-5 space-y-4 ${mobileTab === 'plan' ? 'block' : 'hidden lg:block'} lg:sticky lg:top-4 h-fit`}>
+              
+              {/* Profile Card Header */}
+              <div class="bg-gradient-to-tr from-slate-900 to-indigo-950 border border-slate-800 text-white rounded-xl p-5 shadow-lg space-y-2">
+                <h3 class="text-base font-bold">Xin chào Phong 👋</h3>
+                <p class="text-xs text-indigo-200 leading-relaxed font-medium">
+                  Bạn có <b class="text-orange-400">3 việc cần chú ý</b> hôm nay để giữ vững tiến trình lớp học.
+                </p>
+              </div>
+
+              {/* KHỐI 1: VIỆC CẦN LÀM HÔM NAY */}
+              <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-3">
+                <h4 class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Việc cần làm hôm nay</h4>
+                <div class="space-y-2.5">
+                  {getTodayTasks().map((todo, idx) => (
+                    <div key={idx} class="border border-slate-100 rounded-lg p-3 bg-slate-50/50 flex flex-col justify-between gap-2">
+                      <div class="flex justify-between items-start">
+                        <span class="text-xs font-bold text-slate-800">{idx + 1}. {todo.title}</span>
+                        <span class="text-[10px] bg-slate-200 px-2 py-0.5 rounded font-bold text-slate-600">Hạn: {todo.time}</span>
+                      </div>
+                      
+                      <div class="flex justify-between items-center text-[10px] text-slate-400 font-semibold">
+                        <span>🎯 Lý do: {todo.reason}</span>
+                      </div>
+
+                      <div class="flex justify-end pt-1">
+                        {todo.id === 'n-1' ? (
+                          <button 
+                            onClick={() => handleAction(todo.id, "done")}
+                            class="bg-emerald-500 text-white px-2 py-1 rounded text-[10px] font-bold"
+                          >
+                            Hoàn thành
+                          </button>
+                        ) : (
+                          <button 
+                            onClick={() => openCheckin(notifications.find(n => n.id === 'n-3'))}
+                            class="bg-orange-500 text-white px-2 py-1 rounded text-[10px] font-bold"
+                          >
+                            Cập nhật
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* KHỐI 2: MỤC TIÊU TUẦN */}
+              <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
+                <h4 class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Mục tiêu tuần</h4>
+                
+                <div class="space-y-3">
+                  <div>
+                    <div class="flex justify-between text-xs font-bold text-slate-700 mb-1">
+                      <span>Hoàn thành bài Day 4</span>
+                      <span>{day4Task.progress || 80}%</span>
+                    </div>
+                    <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                      <div class="bg-orange-500 h-full rounded-full transition-all duration-300" style={{ width: `${day4Task.progress || 80}%` }}></div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div class="flex justify-between text-xs font-bold text-slate-700 mb-1">
+                      <span>Weekly Submit</span>
+                      <span>{weeklySubmitTask.progress || 40}%</span>
+                    </div>
+                    <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                      <div class="bg-orange-500 h-full rounded-full transition-all duration-300" style={{ width: `${weeklySubmitTask.progress || 40}%` }}></div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div class="flex justify-between text-xs font-bold text-slate-700 mb-1">
+                      <span>Hoàn thiện Canvas và chốt đề tài</span>
+                      <span>60%</span>
+                    </div>
+                    <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                      <div class="bg-orange-500 h-full rounded-full transition-all duration-300" style={{ width: '60%' }}></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* KHỐI 3: VIỆC CHƯA XONG */}
+              <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-3">
+                <h4 class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Việc chưa xong</h4>
+                <div class="space-y-2">
+                  <div class="flex justify-between items-center text-xs p-2 bg-slate-50 border border-slate-100 rounded-lg">
+                    <span class="font-medium text-slate-700">🛠️ Chạy preflight provider</span>
+                    <span class="text-rose-600 font-bold bg-rose-50 px-2 py-0.5 rounded text-[10px] border border-rose-200">Đang bị kẹt</span>
+                  </div>
+                  <div class="flex justify-between items-center text-xs p-2 bg-slate-50 border border-slate-100 rounded-lg">
+                    <span class="font-medium text-slate-700">🛠️ Kiểm tra file nộp bài</span>
+                    <span class="text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded text-[10px]">Chưa bắt đầu</span>
+                  </div>
+                  <div class="flex justify-between items-center text-xs p-2 bg-slate-50 border border-slate-100 rounded-lg">
+                    <span class="font-medium text-slate-700">🛠️ Hoàn thành reflection</span>
+                    <span class="text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded text-[10px]">Chưa bắt đầu</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* KHỐI 4: GỢI Ý CHIẾN LƯỢC TỔNG HỢP */}
+              <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-3">
+                <h4 class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">💡 Gợi ý chiến lược tổng hợp từ AI</h4>
+                
+                <div class="bg-gradient-to-tr from-amber-50/50 to-orange-50/30 border border-orange-100 rounded-xl p-4 space-y-3 text-xs leading-relaxed text-slate-600">
+                  <p class="font-bold text-slate-900">
+                    Bạn nên hoàn thành Daily Stand-up trước, sau đó xử lý lỗi preflight vì đây là blocker của bài Day 4.
+                  </p>
+                  
+                  <div class="space-y-1.5 border-t border-orange-100/50 pt-2">
+                    <p>1. Nộp Daily Stand-up trước 09:00.</p>
+                    <p>2. Dành 30 phút kiểm tra provider và model.</p>
+                    <p>3. Nếu chưa xử lý được, chuẩn bị log lỗi.</p>
+                    <p>4. Tham gia Office Hour lúc 20:00.</p>
+                    <p>5. Kiểm tra file nộp bài trước 23:59.</p>
+                  </div>
+                </div>
+
+                <div class="flex gap-2">
+                  <button 
+                    onClick={() => { setAppliedPlan(true); triggerToast("Đã áp dụng kế hoạch đề xuất"); }}
+                    class="flex-1 bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-lg text-xs font-bold transition shadow-sm"
+                  >
+                    {appliedPlan ? 'Đã áp dụng' : 'Áp dụng kế hoạch'}
+                  </button>
+                  <button 
+                    onClick={() => triggerToast("Chức năng điều chỉnh đang phát triển")}
+                    class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-2 rounded-lg text-xs font-bold transition border border-slate-200"
+                  >
+                    Điều chỉnh
+                  </button>
+                  <button 
+                    onClick={() => { setAppliedPlan(false); triggerToast("Đã bỏ qua gợi ý"); }}
+                    class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-2 rounded-lg text-xs font-bold transition border border-slate-200"
+                  >
+                    Bỏ qua
+                  </button>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+          {/* CHECK-IN PROGRESS DIALOG MODAL */}
+          {showModal && (
+            <div class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+              <div class="bg-white rounded-2xl border border-slate-200 max-w-md w-full p-6 shadow-2xl space-y-4">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <h3 class="text-base font-extrabold text-slate-900">Check-in Cập nhật tiến độ</h3>
+                    <p class="text-xs text-slate-500 font-semibold mt-1">{currentEditingTask?.title}</p>
+                  </div>
+                  <button 
+                    onClick={() => setShowModal(false)}
+                    class="text-slate-400 hover:text-slate-600 text-lg font-bold"
+                  >
+                    ×
+                  </button>
+                </div>
+
+                <div class="space-y-4">
+                  {/* Status selection */}
+                  <div class="space-y-1.5">
+                    <label class="text-xs font-bold text-slate-500">Trạng thái mới</label>
+                    <select 
+                      value={modalStatus}
+                      onChange={(e) => setModalStatus(e.target.value)}
+                      class="w-full border border-slate-200 rounded-lg p-2 text-sm bg-white outline-none focus:border-orange-500"
+                    >
+                      <option value="todo">Chưa bắt đầu</option>
+                      <option value="in_progress">Đang thực hiện</option>
+                      <option value="blocked">Đang bị kẹt</option>
+                      <option value="done">Đã hoàn thành</option>
+                    </select>
+                  </div>
+
+                  {/* Progress range slider */}
+                  <div class="space-y-1.5">
+                    <div class="flex justify-between text-xs font-bold text-slate-500">
+                      <span>Phần trăm hoàn thành</span>
+                      <span class="text-orange-500">{modalProgress}%</span>
+                    </div>
+                    <input 
+                      type="range" 
+                      min="0" 
+                      max="100" 
+                      step="5" 
+                      value={modalProgress} 
+                      onChange={(e) => setModalProgress(e.target.value)}
+                      class="w-full accent-orange-500"
+                    />
+                  </div>
+
+                  {/* Blocker note text area */}
+                  <div class="space-y-1.5">
+                    <label class="text-xs font-bold text-slate-500">Ghi chú chi tiết / Tên Blocker</label>
+                    <textarea 
+                      rows="3" 
+                      value={modalDesc}
+                      onChange={(e) => setModalDesc(e.target.value)}
+                      placeholder="Mô tả cụ thể lỗi bạn gặp phải..."
+                      class="w-full border border-slate-200 rounded-lg p-2.5 text-xs outline-none focus:border-orange-500"
+                    ></textarea>
+                  </div>
+                </div>
+
+                {/* Footer Buttons */}
+                <div class="flex gap-2 justify-end pt-2">
+                  <button 
+                    onClick={() => setShowModal(false)}
+                    class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2 rounded-lg text-xs font-bold transition border border-slate-200"
+                  >
+                    Hủy bỏ
+                  </button>
+                  <button 
+                    onClick={saveCheckin}
+                    class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-xs font-bold transition shadow-sm"
+                  >
+                    Lưu thay đổi
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
