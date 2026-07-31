@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Bảng điều khiển tiến độ — Cohort 3</title>
+<style>
+  /* Status palette is fixed and reserved: good/warning/serious/critical.
+     warning + serious are sub-3:1 on the light surface by design, so every
+     status badge carries an ICON + TEXT LABEL — colour never means anything
+     on its own. Numbers and labels wear text tokens, never a status colour. */
+  :root {
+    --surface-0:#f4f4f2; --surface-1:#fcfcfb; --surface-2:#ffffff;
+    --text-primary:#0b0b0b; --text-secondary:#52514e; --text-muted:#7c7a75;
+    --line:#e4e4e0; --accent:#2a78d6;
+    --good:#0ca30c; --warning:#fab219; --serious:#ec835a; --critical:#d03b3b;
+    --radius:12px; --shadow:0 1px 2px rgba(0,0,0,.05), 0 8px 24px rgba(0,0,0,.06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --surface-0:#131312; --surface-1:#1a1a19; --surface-2:#212120;
+      --text-primary:#ffffff; --text-secondary:#c3c2b7; --text-muted:#8f8e85;
+      --line:#2e2e2b; --accent:#3987e5;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --surface-0:#131312; --surface-1:#1a1a19; --surface-2:#212120;
+    --text-primary:#ffffff; --text-secondary:#c3c2b7; --text-muted:#8f8e85;
+    --line:#2e2e2b; --accent:#3987e5;
+  }
+
+  * { box-sizing:border-box; }
+  body {
+    margin:0; background:var(--surface-0); color:var(--text-primary);
+    font:14px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---------------------------------------------------------- top bar */
+  .topbar {
+    position:sticky; top:0; z-index:30; display:flex; align-items:center; gap:12px;
+    padding:10px 20px; padding-top:max(10px,env(safe-area-inset-top));
+    background:var(--surface-1); border-bottom:1px solid var(--line);
+  }
+  .mark { width:28px; height:28px; border-radius:8px; background:var(--accent); color:#fff;
+          display:grid; place-items:center; font-weight:800; font-size:12px; flex:none; }
+  .brand { font-weight:700; font-size:14px; letter-spacing:-.01em; }
+  .brand small { display:block; font-weight:400; font-size:11px; color:var(--text-muted); }
+  .spacer { margin-left:auto; }
+  .seg { display:flex; background:var(--surface-0); border:1px solid var(--line); border-radius:9px; padding:2px; }
+  .seg button {
+    font:inherit; font-size:12.5px; font-weight:600; padding:5px 13px; border:0; cursor:pointer;
+    border-radius:7px; background:transparent; color:var(--text-secondary);
+  }
+  .seg button[aria-pressed="true"] { background:var(--surface-2); color:var(--text-primary); box-shadow:var(--shadow); }
+  .btn {
+    font:inherit; font-size:12.5px; font-weight:600; padding:6px 12px; cursor:pointer;
+    border:1px solid var(--line); border-radius:9px; background:var(--surface-2); color:var(--text-primary);
+  }
+  .btn:disabled { opacity:.5; cursor:default; }
+  .meta { font-size:11.5px; color:var(--text-muted); white-space:nowrap; }
+
+  /* ---------------------------------------------------------- layout */
+  .wrap { max-width:1220px; margin:0 auto; padding:18px 20px 120px; }
+
+  /* KPI tiles — a stat tile, not a chart: one number, one label, one status. */
+  .kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:16px; }
+  .kpi {
+    background:var(--surface-1); border:1px solid var(--line); border-radius:var(--radius);
+    padding:13px 15px; border-left:3px solid var(--tone,var(--line));
+  }
+  .kpi .lbl { display:flex; align-items:center; gap:6px; font-size:11.5px; font-weight:600;
+              color:var(--text-secondary); text-transform:uppercase; letter-spacing:.04em; }
+  .kpi .num { font-size:28px; font-weight:750; line-height:1.15; margin-top:4px; font-variant-numeric:tabular-nums; }
+  .kpi .sub { font-size:11.5px; color:var(--text-muted); }
+
+  .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; align-items:start; }
+  .card { background:var(--surface-1); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; }
+  .card.wide { grid-column:1 / -1; }
+  .card > header {
+    display:flex; align-items:center; gap:8px; padding:11px 15px; border-bottom:1px solid var(--line);
+  }
+  .card h2 { margin:0; font-size:13px; font-weight:700; letter-spacing:-.01em; }
+  .count { font-size:11px; font-weight:700; padding:2px 7px; border-radius:20px;
+           background:var(--surface-0); color:var(--text-secondary); font-variant-numeric:tabular-nums; }
+  .card .body { max-height:340px; overflow-y:auto; }
+
+  /* ---------------------------------------------------------- rows */
+  .row { display:block; width:100%; text-align:left; font:inherit; color:inherit;
+         background:transparent; border:0; border-bottom:1px solid var(--line);
+         padding:10px 15px; cursor:pointer; }
+  .row:last-child { border-bottom:0; }
+  .row:hover { background:var(--surface-2); }
+  .row .t { display:flex; gap:8px; align-items:baseline; }
+  .row .title { font-weight:600; font-size:13px; flex:1; min-width:0;
+                overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .row .why { font-size:12px; color:var(--text-secondary); margin-top:3px; }
+  .row .sub { font-size:11.5px; color:var(--text-muted); margin-top:2px; }
+
+  /* Status badge: colour + icon + label, always all three. */
+  .badge { display:inline-flex; align-items:center; gap:4px; flex:none;
+           font-size:10.5px; font-weight:700; padding:2px 7px; border-radius:5px;
+           border:1px solid; background:var(--surface-0); }
+  .b-critical { color:var(--critical); border-color:color-mix(in oklab,var(--critical) 40%,transparent); }
+  .b-serious  { color:var(--serious);  border-color:color-mix(in oklab,var(--serious) 45%,transparent); }
+  .b-warning  { color:#8a6100;         border-color:color-mix(in oklab,var(--warning) 55%,transparent); }
+  .b-good     { color:var(--good);     border-color:color-mix(in oklab,var(--good) 40%,transparent); }
+  .b-neutral  { color:var(--text-secondary); border-color:var(--line); }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .b-warning { color:var(--warning); } }
+  :root[data-theme="dark"] .b-warning { color:var(--warning); }
+
+  .p { font-size:10.5px; font-weight:700; color:var(--text-muted); flex:none; font-variant-numeric:tabular-nums; }
+  .empty { padding:26px 15px; text-align:center; color:var(--text-muted); font-size:12.5px; }
+
+  /* ---------------------------------------------------- chat dock */
+  .dock {
+    position:fixed; right:20px; bottom:20px; z-index:40; width:360px;
+    display:flex; flex-direction:column;
+    background:var(--surface-1); border:1px solid var(--line);
+    border-radius:14px; box-shadow:var(--shadow); overflow:hidden;
+    bottom:max(20px,env(safe-area-inset-bottom));
+  }
+  .dock > header {
+    display:flex; align-items:center; gap:8px; padding:10px 13px; cursor:pointer;
+    background:var(--surface-2); border-bottom:1px solid var(--line);
+  }
+  .dock h3 { margin:0; font-size:12.5px; font-weight:700; }
+  .dot { width:7px; height:7px; border-radius:50%; background:var(--good); flex:none; }
+  .icon-btn { font:inherit; border:0; background:transparent; cursor:pointer;
+              color:var(--text-secondary); font-size:15px; line-height:1; padding:3px 5px; border-radius:6px; }
+  .icon-btn:hover { background:var(--surface-0); }
+  .dock .log { height:300px; overflow-y:auto; padding:13px; display:flex; flex-direction:column; gap:10px; }
+  .dock.min .log, .dock.min form, .dock.min .hint { display:none; }
+  .dock.min { width:auto; }
+  .dock.min > header { border-bottom:0; }
+
+  .msg { max-width:88%; padding:8px 11px; border-radius:11px; font-size:12.5px; }
+  .msg.me { align-self:flex-end; background:var(--accent); color:#fff; border-bottom-right-radius:4px; }
+  .msg.bot { align-self:flex-start; background:var(--surface-2); border:1px solid var(--line); border-bottom-left-radius:4px; }
+  .msg.err { align-self:flex-start; background:color-mix(in oklab,var(--critical) 12%,var(--surface-2));
+             border:1px solid color-mix(in oklab,var(--critical) 40%,transparent); color:var(--critical); }
+  .msg .text { white-space:pre-wrap; overflow-wrap:anywhere; }
+  .msg details { margin-top:7px; border-top:1px solid var(--line); padding-top:6px; }
+  .msg summary { cursor:pointer; font-size:11px; color:var(--text-muted); }
+  .msg .src { font-size:11px; color:var(--text-muted); padding:3px 0; word-break:break-all; }
+
+  .think { display:flex; gap:4px; align-items:center; color:var(--text-muted); font-size:12px; }
+  .think i { width:5px; height:5px; border-radius:50%; background:currentColor; animation:b 1.2s infinite; }
+  .think i:nth-child(2){animation-delay:.15s} .think i:nth-child(3){animation-delay:.3s}
+  @keyframes b { 0%,60%,100%{opacity:.25} 30%{opacity:1} }
+  @media (prefers-reduced-motion:reduce){ .think i{animation:none;opacity:.6} }
+
+  .dock form { display:flex; gap:7px; padding:10px 11px; border-top:1px solid var(--line); align-items:flex-end; }
+  .dock textarea {
+    flex:1; resize:none; font:inherit; font-size:12.5px; color:var(--text-primary);
+    background:var(--surface-0); border:1px solid var(--line); border-radius:9px;
+    padding:8px 10px; max-height:96px; overflow-y:auto;
+  }
+  .dock textarea:focus { outline:2px solid var(--accent); outline-offset:-1px; }
+  .send { flex:none; width:32px; height:32px; border:0; border-radius:9px; cursor:pointer;
+          background:var(--accent); color:#fff; display:grid; place-items:center; }
+  .send:disabled { opacity:.45; cursor:not-allowed; }
+  .send svg { width:15px; height:15px; }
+
+  /* ---------------------------------------------------- responsive */
+  @media (max-width:900px) {
+    .kpis { grid-template-columns:repeat(2,1fr); }
+    .grid { grid-template-columns:1fr; }
+  }
+  @media (max-width:620px) {
+    .wrap { padding:14px 13px 110px; }
+    .brand small, .meta { display:none; }
+    /* Chat becomes a bottom sheet — still a panel, never full-screen. */
+    .dock { left:11px; right:11px; width:auto; }
+    .dock.min { left:auto; }
+    .dock .log { height:min(46vh,300px); }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="mark">C3</div>
+  <div class="brand">Tiến độ Cohort 3<small>SSOT + RAG · agent</small></div>
+  <div class="spacer"></div>
+  <div class="seg" role="group" aria-label="Chế độ">
+    <button id="m-daily"  aria-pressed="true">Hôm nay</button>
+    <button id="m-weekly" aria-pressed="false">Tuần</button>
+  </div>
+  <button class="btn" id="refresh">Làm mới</button>
+  <span class="meta" id="stamp">—</span>
+</header>
+
+<main class="wrap">
+  <section class="kpis" id="kpis" aria-label="Tổng quan"></section>
+  <section class="grid" id="grid"></section>
+</main>
+
+<!-- Chat dock: fixed bottom-right, collapsible, state persisted. -->
+<aside class="dock" id="dock" aria-label="Trợ lý">
+  <header id="dockhead">
+    <span class="dot" id="cdot"></span>
+    <h3>Trợ lý tài liệu</h3>
+    <div class="spacer"></div>
+    <button class="icon-btn" id="toggle" aria-label="Thu nhỏ" aria-expanded="true">–</button>
+  </header>
+  <div class="log" id="clog"></div>
+  <form id="cform">
+    <textarea id="cq" rows="1" placeholder="Hỏi về quy định, gate, deadline…" aria-label="Câu hỏi"></textarea>
+    <button class="send" id="csend" type="submit" aria-label="Gửi">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
+           stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
+    </button>
+  </form>
+</aside>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const el = (tag, cls, text) => { const n = document.createElement(tag);
+  if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
+
+let mode = localStorage.getItem("mode") || "daily";
+let busy = false, chatBusy = false;
+
+/* ------------------------------------------------------------ helpers */
+const fmt = (iso) => {
+  if (!iso) return "chưa có hạn";
+  const d = new Date(String(iso).replace(" ", "T"));
+  return isNaN(d) ? String(iso)
+    : new Intl.DateTimeFormat("vi-VN", { day:"2-digit", month:"2-digit", hour:"2-digit", minute:"2-digit" }).format(d);
+};
+
+// Status tone is derived from the data, and always rendered with icon + label.
+const TONE = {
+  critical: { icon:"⛔", label:"Quá hạn",      cls:"b-critical", css:"var(--critical)" },
+  serious:  { icon:"⏰", label:"Sắp đến hạn",  cls:"b-serious",  css:"var(--serious)"  },
+  warning:  { icon:"📅", label:"Hôm nay",      cls:"b-warning",  css:"var(--warning)"  },
+  good:     { icon:"🗓", label:"Trong tuần",   cls:"b-good",     css:"var(--good)"     },
+  blocked:  { icon:"🚧", label:"Đang kẹt",     cls:"b-serious",  css:"var(--serious)"  },
+  neutral:  { icon:"•",  label:"Mở",           cls:"b-neutral",  css:"var(--line)"     },
+};
+
+function badge(tone) {
+  const t = TONE[tone] || TONE.neutral;
+  const b = el("span", "badge " + t.cls);
+  b.append(el("span", null, t.icon), el("span", null, t.label));  // never colour alone
+  return b;
+}
+
+function toneOf(item) {
+  if (item.status === "blocked") return "blocked";
+  if (!item.deadline) return "neutral";
+  const due = new Date(String(item.deadline).replace(" ", "T")), now = new Date();
+  if (due < now) return "critical";
+  if (due.toDateString() === now.toDateString()) return "warning";
+  if ((due - now) / 86400000 <= 3) return "serious";
+  return "good";
+}
+
+/* ------------------------------------------------------------- render */
+function taskRow(item, tone) {
+  const r = el("button", "row"); r.type = "button";
+  const head = el("div", "t");
+  head.append(el("span", "title", item.title || `#${item.task_id}`), badge(tone || toneOf(item)));
+  if (item.priority != null) head.append(el("span", "p", `P${item.priority}`));
+  r.append(head);
+  if (item.reason) r.append(el("div", "why", item.reason));
+  r.append(el("div", "sub",
+    [fmt(item.deadline), item.assignee, item.team, item.project_id].filter(Boolean).join(" · ")));
+  // Clicking a task prefills the chat and opens it — dashboard stays usable.
+  r.addEventListener("click", () => prefill(
+    `Về task “${item.title}” (${item.project_id || ""}): quy định nào áp dụng và nên xử lý thế nào?`));
+  return r;
+}
+
+function suggestionRow(s) {
+  if (s.kind === "bottleneck") {
+    const r = el("button", "row"); r.type = "button";
+    const h = el("div", "t");
+    h.append(el("span", "title", "Nút thắt: " + s.blocker), badge("blocked"));
+    r.append(h, el("div", "why", s.reason),
+      el("div", "sub", `${s.task_count} task · ${(s.teams_affected || []).length} team`));
+    r.addEventListener("click", () => prefill(`Nút thắt “${s.blocker}” nên xử lý theo quy định nào?`));
+    return r;
+  }
+  if (s.kind === "milestone_impact") {
+    const r = el("button", "row"); r.type = "button";
+    const h = el("div", "t");
+    h.append(el("span", "title", "Mốc: " + s.milestone), badge(s.days_until <= 2 ? "serious" : "good"));
+    r.append(h, el("div", "why", s.reason),
+      el("div", "sub", `${fmt(s.starts_at)} · ${s.team} · còn ${s.days_until} ngày`));
+    r.addEventListener("click", () => prefill(`Mốc “${s.milestone}” yêu cầu nộp những gì?`));
+    return r;
+  }
+  return taskRow(s);
+}
+
+function plainRow(title, detail, tone) {
+  const r = el("div", "row"); r.style.cursor = "default";
+  const h = el("div", "t"); h.append(el("span", "title", title), badge(tone));
+  r.append(h);
+  if (detail) r.append(el("div", "why", detail));
+  return r;
+}
+
+function card(title, count, rows, emptyMsg, wide) {
+  const c = el("section", "card" + (wide ? " wide" : ""));
+  const h = el("header");
+  h.append(el("h2", null, title), el("span", "count", String(count)));
+  c.append(h);
+  const body = el("div", "body");
+  if (!rows.length) body.append(el("div", "empty", emptyMsg));
+  else rows.forEach((r) => body.append(r));
+  c.append(body);
+  return c;
+}
+
+function kpi(label, tone, n, sub) {
+  const t = TONE[tone];
+  const k = el("div", "kpi"); k.style.setProperty("--tone", t.css);
+  const l = el("div", "lbl");
+  l.append(el("span", null, t.icon), el("span", null, label));   // icon + label
+  k.append(l, el("div", "num", String(n)), el("div", "sub", sub));
+  return k;
+}
+
+function render(d) {
+  $("#kpis").replaceChildren(
+    kpi("Quá hạn",   "critical", d.overdue_alerts.length,  "cần xử lý ngay"),
+    kpi("Hôm nay",   "warning",  d.today_items.length,     "đến hạn trong ngày"),
+    kpi("Sắp đến hạn","serious", d.due_soon_alerts.length, "trong 3 ngày tới"),
+    kpi("Trong tuần","good",     d.week_items.length,
+        mode === "weekly" ? "tuần hiện tại" : "chỉ có ở chế độ Tuần"),
+  );
+
+  const grid = $("#grid");
+  grid.replaceChildren(
+    card("Ưu tiên đề xuất", d.priority_suggestions.length,
+         d.priority_suggestions.map(suggestionRow),
+         "Không có đề xuất ưu tiên.", true),
+    card("Cảnh báo quá hạn", d.overdue_alerts.length,
+         d.overdue_alerts.map((i) => taskRow(i, "critical")), "Không có task quá hạn 🎉"),
+    card("Đến hạn hôm nay", d.today_items.length,
+         d.today_items.map((i) => taskRow(i, "warning")), "Hôm nay không có task đến hạn."),
+    card("Sắp đến hạn", d.due_soon_alerts.length,
+         d.due_soon_alerts.map((i) => taskRow(i, "serious")), "Không có task sắp đến hạn."),
+    card("Task trong tuần", d.week_items.length,
+         d.week_items.map((i) => taskRow(i)),
+         mode === "weekly" ? "Tuần này chưa có task." : "Chuyển sang chế độ Tuần để xem."),
+    card("Hành động", d.actions.length,
+         d.actions.map((a) => plainRow(
+           a.type, a.detail || a.preview || JSON.stringify(a).slice(0, 120),
+           a.type === "clarification_needed" || a.type === "data_integrity" ? "serious" : "neutral")),
+         "Không có hành động."),
+    card("Nguồn đã dùng", d.sources_used.length,
+         d.sources_used.map((s) => plainRow(
+           `${s.type} · ${s.ref}`, s.detail, s.status === "ok" ? "good" : "serious")),
+         "Chưa có nguồn."),
+  );
+}
+
+/* -------------------------------------------------------------- fetch */
+async function load() {
+  if (busy) return;
+  busy = true; $("#refresh").disabled = true; $("#stamp").textContent = "đang tải…";
+  try {
+    const res = await fetch("/api/agent", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ mode }),
+    });
+    const d = await res.json();
+    if (!res.ok) throw new Error(d.detail || `HTTP ${res.status}`);
+    render(d);
+    $("#stamp").textContent = "cập nhật " + new Date().toLocaleTimeString("vi-VN");
+  } catch (err) {
+    $("#kpis").replaceChildren();
+    $("#grid").replaceChildren(card("Không tải được dữ liệu", 0, [], String(err.message), true));
+    $("#stamp").textContent = "lỗi";
+  } finally { busy = false; $("#refresh").disabled = false; }
+}
+
+function setMode(m) {
+  mode = m; localStorage.setItem("mode", m);
+  $("#m-daily").setAttribute("aria-pressed", String(m === "daily"));
+  $("#m-weekly").setAttribute("aria-pressed", String(m === "weekly"));
+  load();
+}
+
+/* --------------------------------------------------------- chat dock */
+const dock = $("#dock"), clog = $("#clog"), cq = $("#cq");
+
+function setChat(open) {
+  dock.classList.toggle("min", !open);
+  $("#toggle").textContent = open ? "–" : "+";
+  $("#toggle").setAttribute("aria-expanded", String(open));
+  $("#toggle").setAttribute("aria-label", open ? "Thu nhỏ" : "Mở rộng");
+  localStorage.setItem("chatOpen", open ? "1" : "0");
+}
+$("#dockhead").addEventListener("click", (e) => {
+  if (e.target.closest("#toggle") || !dock.classList.contains("min")) {
+    if (e.target.closest("#toggle")) setChat(dock.classList.contains("min"));
+  } else setChat(true);
+});
+$("#toggle").addEventListener("click", (e) => { e.stopPropagation(); setChat(dock.classList.contains("min")); });
+
+function prefill(text) { setChat(true); cq.value = text; autosize(); cq.focus(); }
+function autosize() { cq.style.height = "auto"; cq.style.height = Math.min(cq.scrollHeight, 96) + "px"; }
+
+function bubble(cls) { const b = el("div", "msg " + cls); clog.append(b);
+  clog.scrollTop = clog.scrollHeight; return b; }
+
+async function ask(q) {
+  if (chatBusy) return;
+  chatBusy = true; $("#csend").disabled = true;
+  bubble("me").append(el("div", "text", q));
+  const b = bubble("bot");
+  const th = el("div", "think"); th.append(el("span", null, "đang tra cứu"),
+    el("i"), el("i"), el("i")); b.append(th);
+  try {
+    const res = await fetch("/api/query", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ question: q }),
+    });
+    let d = {}; try { d = await res.json(); } catch {}
+    if (!res.ok) {
+      const dt = d.detail;
+      throw new Error(Array.isArray(dt) ? (dt[0]?.msg ?? "Yêu cầu không hợp lệ") : (dt || `HTTP ${res.status}`));
+    }
+    b.replaceChildren(el("div", "text", d.answer || "(trống)"));
+    if (d.sources?.length) {
+      const det = el("details");
+      det.append(el("summary", null, `${d.sources.length} nguồn`));
+      d.sources.forEach((s, i) => det.append(el("div", "src",
+        `[${i + 1}] ${s.title || s.id} — ${s.source_file || ""}${s.source_pointer || ""}`)));
+      b.append(det);
+    }
+  } catch (err) {
+    b.className = "msg err";
+    b.replaceChildren(el("div", "text", "Lỗi: " + err.message));
+  } finally {
+    chatBusy = false; $("#csend").disabled = false;
+    clog.scrollTop = clog.scrollHeight;
+  }
+}
+
+$("#cform").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const q = cq.value.trim(); if (!q || chatBusy) return;
+  cq.value = ""; autosize(); ask(q);
+});
+cq.addEventListener("input", autosize);
+cq.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); $("#cform").requestSubmit(); }
+});
+
+/* ---------------------------------------------------------------- init */
+$("#m-daily").addEventListener("click", () => setMode("daily"));
+$("#m-weekly").addEventListener("click", () => setMode("weekly"));
+$("#refresh").addEventListener("click", load);
+
+fetch("/api/health").then((r) => r.json()).then((h) => {
+  $("#cdot").style.background = h.chroma_connected ? "var(--good)" : "var(--critical)";
+}).catch(() => { $("#cdot").style.background = "var(--critical)"; });
+
+setChat(localStorage.getItem("chatOpen") !== "0");   // open by default, remembered
+setMode(mode);
+</script>
+</body>
+</html>
