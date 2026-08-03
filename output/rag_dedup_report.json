@@ -1,0 +1,145 @@
+{
+  "generated_by": "scripts/build_rag_chunks.py",
+  "schema_version": "1.0.0",
+  "near_dup_threshold": 0.65,
+  "input_dir": "codebase/data/rag",
+  "source_files_scanned": [
+    "cohort3_discord_commands.json",
+    "cohort3_evening_calendar.json",
+    "cohort3_knowledge_base.json",
+    "cohort3_quality_control_demo_day.json",
+    "cohort3_team_and_topic_selection.json",
+    "cohort3_weekly_runbook.json",
+    "cohort3_xp_system.json",
+    "master_timeline.json"
+  ],
+  "non_json_files_ignored": [
+    "weekly_rhymn_json"
+  ],
+  "totals": {
+    "chunks_extracted": 48,
+    "chunks_kept": 36,
+    "chunks_removed": 12,
+    "units_skipped_empty": 0
+  },
+  "chunks_extracted_per_file": {
+    "cohort3_discord_commands.json": 5,
+    "cohort3_evening_calendar.json": 7,
+    "cohort3_knowledge_base.json": 14,
+    "cohort3_quality_control_demo_day.json": 3,
+    "cohort3_team_and_topic_selection.json": 2,
+    "cohort3_weekly_runbook.json": 4,
+    "cohort3_xp_system.json": 2,
+    "master_timeline.json": 11
+  },
+  "kept_per_file": {
+    "cohort3_discord_commands.json": 5,
+    "cohort3_evening_calendar.json": 7,
+    "cohort3_knowledge_base.json": 2,
+    "cohort3_quality_control_demo_day.json": 3,
+    "cohort3_team_and_topic_selection.json": 2,
+    "cohort3_weekly_runbook.json": 4,
+    "cohort3_xp_system.json": 2,
+    "master_timeline.json": 11
+  },
+  "removed": [
+    {
+      "removed_id": "cohort3_knowledge_base::documents-1-sections-5::241de84c",
+      "removed_source": "cohort3_knowledge_base.json/documents/1/sections/5",
+      "kept_id": "master_timeline::timeline-5::033f8a5c",
+      "kept_source": "master_timeline.json/timeline/5",
+      "reason": "duplicate_exact",
+      "similarity": 1.0
+    },
+    {
+      "removed_id": "cohort3_knowledge_base::documents-2-sections-0::551a015c",
+      "removed_source": "cohort3_knowledge_base.json/documents/2/sections/0",
+      "kept_id": "cohort3_weekly_runbook::blocks-0::946e55b0",
+      "kept_source": "cohort3_weekly_runbook.json/blocks/0",
+      "reason": "duplicate_exact",
+      "similarity": 1.0
+    },
+    {
+      "removed_id": "cohort3_knowledge_base::documents-2-sections-1::3a0c1eb0",
+      "removed_source": "cohort3_knowledge_base.json/documents/2/sections/1",
+      "kept_id": "cohort3_weekly_runbook::blocks-1::d00629ad",
+      "kept_source": "cohort3_weekly_runbook.json/blocks/1",
+      "reason": "duplicate_exact",
+      "similarity": 1.0
+    },
+    {
+      "removed_id": "cohort3_knowledge_base::documents-2-sections-2::840658e8",
+      "removed_source": "cohort3_knowledge_base.json/documents/2/sections/2",
+      "kept_id": "cohort3_weekly_runbook::blocks-2::55329ab6",
+      "kept_source": "cohort3_weekly_runbook.json/blocks/2",
+      "reason": "duplicate_exact",
+      "similarity": 1.0
+    },
+    {
+      "removed_id": "cohort3_knowledge_base::documents-0-sections-0::5375d588",
+      "removed_source": "cohort3_knowledge_base.json/documents/0/sections/0",
+      "kept_id": "cohort3_team_and_topic_selection::sections-0::39f1feef",
+      "kept_source": "cohort3_team_and_topic_selection.json/sections/0",
+      "reason": "duplicate_near",
+      "similarity": 1.0
+    },
+    {
+      "removed_id": "cohort3_knowledge_base::documents-0-sections-1::0862c0af",
+      "removed_source": "cohort3_knowledge_base.json/documents/0/sections/1",
+      "kept_id": "cohort3_team_and_topic_selection::sections-1::65ea0790",
+      "kept_source": "cohort3_team_and_topic_selection.json/sections/1",
+      "reason": "duplicate_near",
+      "similarity": 0.8889
+    },
+    {
+      "removed_id": "cohort3_knowledge_base::documents-1-sections-0::2a3b537a",
+      "removed_source": "cohort3_knowledge_base.json/documents/1/sections/0",
+      "kept_id": "master_timeline::timeline-0::a757c694",
+      "kept_source": "master_timeline.json/timeline/0",
+      "reason": "duplicate_near",
+      "similarity": 1.0
+    },
+    {
+      "removed_id": "cohort3_knowledge_base::documents-1-sections-1::5eb5d06c",
+      "removed_source": "cohort3_knowledge_base.json/documents/1/sections/1",
+      "kept_id": "master_timeline::timeline-1::744e0da2",
+      "kept_source": "master_timeline.json/timeline/1",
+      "reason": "duplicate_near",
+      "similarity": 1.0
+    },
+    {
+      "removed_id": "cohort3_knowledge_base::documents-1-sections-2::1a1b881a",
+      "removed_source": "cohort3_knowledge_base.json/documents/1/sections/2",
+      "kept_id": "master_timeline::timeline-2::10182ba8",
+      "kept_source": "master_timeline.json/timeline/2",
+      "reason": "duplicate_near",
+      "similarity": 0.6842
+    },
+    {
+      "removed_id": "cohort3_knowledge_base::documents-1-sections-3::8379c459",
+      "removed_source": "cohort3_knowledge_base.json/documents/1/sections/3",
+      "kept_id": "master_timeline::timeline-3::7ce5b39e",
+      "kept_source": "master_timeline.json/timeline/3",
+      "reason": "duplicate_near",
+      "similarity": 1.0
+    },
+    {
+      "removed_id": "cohort3_knowledge_base::documents-1-sections-4::677aefaa",
+      "removed_source": "cohort3_knowledge_base.json/documents/1/sections/4",
+      "kept_id": "master_timeline::timeline-4::71ddf2ed",
+      "kept_source": "master_timeline.json/timeline/4",
+      "reason": "duplicate_near",
+      "similarity": 1.0
+    },
+    {
+      "removed_id": "cohort3_knowledge_base::documents-2-sections-3::47745c63",
+      "removed_source": "cohort3_knowledge_base.json/documents/2/sections/3",
+      "kept_id": "cohort3_weekly_runbook::blocks-3::df35bc18",
+      "kept_source": "cohort3_weekly_runbook.json/blocks/3",
+      "reason": "duplicate_near",
+      "similarity": 0.8485
+    }
+  ],
+  "skipped_empty_units": [],
+  "near_misses_below_threshold": []
+}

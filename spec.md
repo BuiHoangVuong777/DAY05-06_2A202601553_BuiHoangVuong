@@ -28,8 +28,16 @@ Loại: [ ] Tối ưu tính năng có sẵn · [x] Tính năng mới
 
 ## §3. Giải pháp tương tự đã nghiên cứu
 
-- `[Sản phẩm 1]`: flow / đáng học / đáng né / StudyFlow khác gì.
-- `[Sản phẩm 2]`: flow / đáng học / đáng né / StudyFlow khác gì.
+> ⚠️ Phần này là **nghiên cứu của team** — dưới đây là mô tả sản phẩm theo hiểu biết chung, team phải tự
+> dùng thử và xác nhận/sửa trước CP4, không được nộp nguyên văn.
+
+- **Todoist / Google Tasks**: nhập task nhanh bằng ngôn ngữ tự nhiên, có parse ngày giờ.
+  *Đáng học*: ô nhập một dòng, đoán deadline rồi cho người dùng sửa. *Đáng né*: không hiểu bối cảnh
+  nhóm/môn học. *StudyFlow khác*: gắn task với gate/mốc chương trình và giải thích vì sao xếp trước.
+- **Trello / Notion**: bảng cộng tác nhóm, tuỳ biến cao.
+  *Đáng học*: nhìn được việc của cả nhóm. *Đáng né*: phải tự dựng và tự bảo trì cấu trúc; không tự nhắc.
+  *StudyFlow khác*: rule engine tự xếp ưu tiên và nêu lý do, không bắt người dùng tự sắp.
+- `[Sản phẩm 3 — team bổ sung sau khi dùng thử]`
 
 ## §4. Thiết kế
 
@@ -81,9 +89,22 @@ Loại: [ ] Tối ưu tính năng có sẵn · [x] Tính năng mới
 - **Không bịa khi thiếu dữ kiện:** assignee/course/deadline không có trong input phải để trống hoặc đánh dấu mơ hồ.
 - **Tính đúng ưu tiên:** quá hạn lên trước; kẹt nhiều ngày có cảnh báo; done không còn trong reminder.
 - **Minh bạch chế độ:** mất key/API lỗi phải hiện fallback.
-- **Golden set:** `[CẦN TEAM HOÀN THIỆN ≥20 case; ≥10 case từ evidence/chatlog thật]`.
-- **Quality bar:** `"Đạt khi ≥ [CẦN CHỐT]% case qua toàn bộ tiêu chí, và 100% case thiếu căn cứ không bịa deadline/assignee."`
-- **Kết quả:** unit test nền hiện có 11/11 pass; đây chưa phải kết quả golden set.
+- **Golden set:** `eval/golden-set.json` — **22 case**, mỗi case ghi `grounded_in` trỏ tới nguồn thật
+  (10 case bám chunk trong `output/rag_chunks.jsonl`, 4 case bám view trong `ssot/ssot.db`,
+  1 case bám hành vi có thật trong chatlog, 7 case dựng để kiểm thử).
+  ⚠️ **Chưa đạt yêu cầu “≥10 case từ chatlog thật”.** Lý do đã kiểm chứng: chatlog trong data pack là log
+  gia sư **nội dung bài giảng** (1261 lượt học viên hỏi về slide), không phải log hỏi deadline/tiến độ —
+  chỉ 16 dòng chứa từ khoá tiến độ và đều là trích nội dung slide. Team cần quyết định: đổi tiêu chí này,
+  hay thu thập log hỏi-đáp tiến độ thật từ Discord.
+- **Quality bar:** `[CẦN TEAM CHỐT]`. Đề xuất dựa trên số đo thật hiện tại: **≥90% case qua toàn bộ tiêu chí,
+  và 100% case thiếu căn cứ không bịa deadline/assignee.** (Bộ eval tự động đang đạt 34/36 = 94%.)
+- **Kết quả đo thật (cập nhật lần chạy gần nhất):**
+  - Unit test rule engine + schema: **19/19 pass** (`python3 agent/test_agent.py`).
+  - Bộ eval hệ thống: **34/36 pass**, 1 lỗi chặn (`python3 -m agent.evals.run_evals`).
+  - Lỗi còn lại **EV-NEG-004**: corpus có hai ngày Demo Day mâu thuẫn (03–05/09 ở calendar vs 01/09 ở
+    timeline); cả hai chunk đều được truy xuất nhưng câu trả lời chỉ nêu một mốc, chưa nói rõ là mâu thuẫn.
+  - Đã chứng minh **không bịa**: câu hỏi ngoài phạm vi bị từ chối, không sinh số liệu (EV-NEG-005 pass).
+  - Đây **là** kết quả eval tự động, **chưa phải** kết quả chấm tay golden set 22 case.
 
 ## §8. Phân công & kế hoạch
 
@@ -97,4 +118,10 @@ Loại: [ ] Tối ưu tính năng có sẵn · [x] Tính năng mới
 | Thời điểm | Đổi gì | Vì sao |
 |---|---|---|
 | 2026-07-30 | Dựng Mock flow nhập task → AI draft → rule priority → reminder preview | Chốt một luồng demo hẹp, bám mô tả ban đầu |
-| `[ ]` | `[Thay đổi sau user test]` | `[Trỏ về feedback cụ thể]` |
+| 2026-07-30 | Dựng SSOT SQLite (20 user / 5 team / 100 project / 90 task) làm nguồn sự thật | Rule engine cần dữ liệu tra được, không đọc từ RAG |
+| 2026-07-30 | Tách rule engine ưu tiên thành `agent/priority.py`, 7 luật, có `reason` | Yêu cầu §7: xếp ưu tiên phải giải thích được, không do LLM tự nghĩ |
+| 2026-07-30 | Dựng RAG (Chroma + 36 chunk) chỉ dùng cho tra quy định | Tách nguồn: task từ SSOT, quy định từ tài liệu |
+| 2026-07-31 | Thêm đăng nhập theo từng tài khoản + cá nhân hoá dashboard | Mỗi học viên phải thấy việc của chính mình |
+| 2026-07-31 | Bộ eval 36 case tự động (`agent/evals/`) | Cần đo lặp lại được, không chấm cảm tính |
+| 2026-07-31 | Sửa lỗi lệch múi giờ: agent so UTC với giờ máy (UTC+7) | Eval EV-DAILY-004 phát hiện; “đến hạn hôm nay” bị lệch 1 ngày |
+| `[ ]` | `[Thay đổi sau user test — CHƯA CHẠY]` | `[Trỏ về feedback cụ thể]` |

@@ -1,0 +1,115 @@
+{
+  "doc_type": "timeline",
+  "language": "vi",
+  "title": "Lộ trình 6 tuần: Từ Ý tưởng đến Demo Day",
+  "subtitle": "Kế hoạch triển khai từ Kick-off đến Demo Day, kèm các lưu ý vận hành quan trọng trong suốt quá trình build.",
+  "section": {
+    "id": "launch_readiness",
+    "name": "LAUNCH READINESS"
+  },
+  "summary": "Lộ trình 6 tuần của team: tuần 1 kick-off và lập đội, tuần 2 chốt đề tài qua Gate 1, tuần 3 xây MVP đầu tiên, tuần 4 hoàn thiện MVP qua Gate 2, tuần 5 nộp hồ sơ Demo Day, và tuần 6 demo chính thức.",
+  "timeline": [
+    {
+      "week": 1,
+      "range": "23/07 - 29/07",
+      "status": "Đã xong",
+      "milestone": "Kick-off & Lập đội",
+      "focus": "Ổn định đội ngũ, làm quen với các công cụ như Discord, GitHub, AI Log.",
+      "gate": null,
+      "action": null,
+      "priority": 1
+    },
+    {
+      "week": 2,
+      "range": "30/07 - 05/08",
+      "status": "Hiện tại",
+      "milestone": "Gate 1 – Chốt đề tài",
+      "focus": "Khảo sát, phân tích đề bài, hoàn thiện Brief, PRD và Workflow.",
+      "gate": "GATE 1",
+      "action": "Dùng lệnh /gate submit để nộp link tài liệu hoặc repo.",
+      "priority": 2
+    },
+    {
+      "week": 3,
+      "range": "06/08 - 12/08",
+      "status": "Upcoming",
+      "milestone": "Xây dựng MVP đầu tiên",
+      "focus": "Bắt tay vào code những tính năng cốt lõi nhất của Minimum Viable Product.",
+      "gate": null,
+      "action": null,
+      "priority": 3
+    },
+    {
+      "week": 4,
+      "range": "13/08 - 19/08",
+      "status": "Upcoming",
+      "milestone": "Gate 2 – Hoàn thiện MVP",
+      "focus": "Tối ưu hóa sản phẩm dựa trên feedback của Mentor và người dùng thử.",
+      "gate": "GATE 2",
+      "action": "Nộp Gate 2 để chuẩn bị cho giai đoạn nước rút.",
+      "priority": 4
+    },
+    {
+      "week": 5,
+      "range": "20/08 - 26/08",
+      "status": "Upcoming",
+      "milestone": "Nộp hồ sơ Demo Day",
+      "focus": "Hoàn thiện sản phẩm cuối cùng, chuẩn bị slide thuyết trình và nộp hồ sơ doanh nghiệp.",
+      "gate": null,
+      "action": null,
+      "priority": 5
+    },
+    {
+      "week": 6,
+      "range": "01/09/2026",
+      "status": "Upcoming",
+      "milestone": "DEMO DAY!",
+      "focus": "Ngày hội tỏa sáng của tất cả các team.",
+      "gate": null,
+      "action": null,
+      "priority": 6
+    }
+  ],
+  "operating_notes": [
+    {
+      "title": "AI Log",
+      "importance": "Cực kỳ quan trọng",
+      "detail": "Team phải setup AI Log ngay từ bây giờ và đảm bảo log đầy đủ các phiên prompt từ lúc bắt đầu cho đến Demo Day.",
+      "reason": "Đây là minh chứng cho quá trình build cùng AI của team."
+    },
+    {
+      "title": "Daily Report",
+      "importance": "Bắt buộc hàng ngày",
+      "detail": "Cập nhật nhanh mỗi ngày trong channel nhóm."
+    },
+    {
+      "title": "Weekly Report",
+      "importance": "Bắt buộc hàng tuần",
+      "detail": "Nộp báo cáo tổng kết tuần để tích lũy XP và giúp Mentor theo sát team."
+    },
+    {
+      "title": "Gate Check",
+      "importance": "Quan trọng",
+      "detail": "Luôn dùng /gate list và /gate view để không bỏ lỡ bất kỳ yêu cầu chi tiết nào từ Ban tổ chức."
+    }
+  ],
+  "note": "Khuyến khích làm việc với khách hàng tiềm năng từ sớm để hiểu pain points và giải đúng nhu cầu thực tế.",
+  "keywords": [
+    "launch readiness",
+    "lộ trình 6 tuần",
+    "kick-off",
+    "gate 1",
+    "brief",
+    "prd",
+    "workflow",
+    "mvp",
+    "gate 2",
+    "demo day",
+    "ai log",
+    "daily report",
+    "weekly report",
+    "gate list",
+    "gate view",
+    "pain points"
+  ]
+}

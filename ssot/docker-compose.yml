@@ -1,0 +1,17 @@
+name: ssot
+
+services:
+  ssot:
+    build: .
+    restart: unless-stopped
+    environment:
+      DB_PATH: /data/ssot.db
+      # Set to 1 to wipe and re-seed on the next start.
+      FORCE_RESEED: ${FORCE_RESEED:-0}
+    volumes:
+      - ssot-data:/data          # the .db file survives down/up
+    ports:
+      - "${SSOT_WEB_PORT:-8081}:8080"
+
+volumes:
+  ssot-data:

@@ -1,0 +1,191 @@
+{
+    "doc_type": "cohort_weekly_program",
+    "language": "vi",
+    "title": "Chương trình hàng tuần & Lịch trình Workshop",
+    "section": {
+        "id": "weekly_program",
+        "name": "WEEKLY RUNBOOK"
+    },
+    "summary": "Tài liệu mô tả nhịp vận hành hàng tuần và lịch trình workshop của Cohort 3. Phần weekly runbook bao gồm stand up hằng ngày, coaching breakout room với mentor cố định, mentoring 1-1 khi cần hỗ trợ trực tiếp. Phần workshop curriculum gồm các chủ đề từ Kick-off đến The Pitch, cùng các chủ đề bổ sung như Data pipeline và Recommendation.",
+    "metadata": {
+        "cohort": "Cohort 3",
+        "source": "weekly_program_and_workshop_guideline",
+        "priority": 1
+    },
+    "blocks": [
+        {
+            "block_id": "daily_standup",
+            "title": "Stand Up hằng ngày",
+            "type": "progress_report",
+            "content": [
+                "Cập nhật việc đã làm hôm qua.",
+                "Cập nhật việc đang làm hôm nay.",
+                "Cập nhật những việc nào đang gặp vấn đề."
+            ],
+            "metadata": {
+                "tags": [
+                    "standup",
+                    "daily report",
+                    "progress"
+                ]
+            }
+        },
+        {
+            "block_id": "coaching_breakout_room",
+            "title": "Coaching Breakout Room",
+            "type": "mentoring_session",
+            "content": [
+                "Mentor cố định nhóm teams suốt 6 tuần.",
+                "Mỗi team cần submit weekly report trước mỗi buổi Coaching (Mentor Duty)."
+            ],
+            "metadata": {
+                "tags": [
+                    "coaching",
+                    "mentor duty",
+                    "weekly report"
+                ]
+            }
+        },
+        {
+            "block_id": "mentoring_1on1",
+            "title": "Mentoring 1-1",
+            "type": "direct_support",
+            "content": [
+                "Tùy theo thời điểm.",
+                "Mentor / BTC hỗ trợ trực tiếp."
+            ],
+            "metadata": {
+                "tags": [
+                    "1-1",
+                    "direct support",
+                    "mentor",
+                    "btc"
+                ]
+            }
+        },
+        {
+            "block_id": "workshop_curriculum",
+            "title": "Lịch trình Workshop",
+            "type": "curriculum",
+            "content": [
+                {
+                    "order": 1,
+                    "title": "Kick-off",
+                    "detail": "Chia nhóm, chọn đề, khởi tạo repo"
+                },
+                {
+                    "order": 2,
+                    "title": "Problem → MVP Canvas",
+                    "detail": ""
+                },
+                {
+                    "order": 3,
+                    "title": "PM & team cowork",
+                    "detail": "soft skills, rules, xử lý xung đột"
+                },
+                {
+                    "order": 4,
+                    "title": "Vibe coding 101",
+                    "detail": "by team"
+                },
+                {
+                    "order": 5,
+                    "title": "AI Product Design",
+                    "detail": "UX patterns & prototyping"
+                },
+                {
+                    "order": 6,
+                    "title": "Tư duy Product",
+                    "detail": "cho người làm sản phẩm"
+                },
+                {
+                    "order": 7,
+                    "title": "First Working Agent",
+                    "detail": "LLM + tool calling"
+                },
+                {
+                    "order": 8,
+                    "title": "RAG Pipeline",
+                    "detail": "Ingestion, chunking, retrieval"
+                },
+                {
+                    "order": 9,
+                    "title": "Multi-Step Agent",
+                    "detail": "Plan → execute → validate"
+                },
+                {
+                    "order": 10,
+                    "title": "MCP & Multi-Agent",
+                    "detail": "Protocol & orchestration"
+                },
+                {
+                    "order": 11,
+                    "title": "Optimize & Evaluate",
+                    "detail": "Quality, latency, cost"
+                },
+                {
+                    "order": 12,
+                    "title": "Guardrails & Reliability",
+                    "detail": "Safety & error handling"
+                },
+                {
+                    "order": 13,
+                    "title": "Go Live",
+                    "detail": "CI/CD, cloud deploy, observability"
+                },
+                {
+                    "order": 14,
+                    "title": "The Pitch",
+                    "detail": "Product narrative & investor demo"
+                },
+                {
+                    "order": "extra",
+                    "title": "Data pipeline",
+                    "detail": "chủ đề bổ sung"
+                },
+                {
+                    "order": "extra",
+                    "title": "Recommendation",
+                    "detail": "chủ đề bổ sung"
+                }
+            ],
+            "metadata": {
+                "tags": [
+                    "workshop",
+                    "curriculum",
+                    "agent",
+                    "rag",
+                    "product",
+                    "evaluation",
+                    "go live"
+                ]
+            }
+        }
+    ],
+    "keywords": [
+        "weekly runbook",
+        "stand up",
+        "daily progress",
+        "weekly report",
+        "coaching breakout room",
+        "mentor duty",
+        "mentoring 1-1",
+        "workshop curriculum",
+        "kick-off",
+        "mvp canvas",
+        "first working agent",
+        "rag pipeline",
+        "multi-step agent",
+        "mcp",
+        "evaluate",
+        "go live",
+        "the pitch"
+    ],
+    "notes": [
+        "Weekly report phải được nộp trước mỗi buổi Coaching.",
+        "Mentor breakout room được cố định cho nhóm team trong suốt 6 tuần.",
+        "Standup nên bao gồm hôm qua, hôm nay, và blockers.",
+        "Workshop curriculum là chuỗi nội dung đào tạo cốt lõi của chương trình.",
+        "Data pipeline và Recommendation là các chủ đề bổ sung."
+    ]
+}

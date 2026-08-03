@@ -1,60 +1,291 @@
-[
-  {
-    "id": "GS-001",
-    "source": "synthetic",
-    "layer": "normal",
-    "input": "Lan làm 6 slide demo trước 17h ngày mai, mức quan trọng cao",
-    "expected": {
-      "title_non_empty": true,
-      "assignee": "Lan",
-      "importance": "high",
-      "must_ask_clarification": false
-    },
-    "review_status": "draft"
+{
+  "_note": "Golden set cho trợ lý tiến độ. 'grounded_in' trỏ tới nguồn THẬT trong repo (chunk id trong output/rag_chunks.jsonl, bảng/view trong ssot/ssot.db, hoặc chatlog). Case 'synthetic' là tình huống dựng để kiểm thử, không phải dữ liệu bịa gán cho tài liệu.",
+  "_chatlog_limitation": "data/vlearn-pack/chatlog là log gia sư NỘI DUNG BÀI GIẢNG (1261 lượt học viên hỏi về slide), KHÔNG phải log hỏi deadline/tiến độ — chỉ 16 dòng có từ khoá tiến độ và đều là trích slide. Vì vậy KHÔNG rút được 10 case tiến độ trực tiếp từ chatlog như spec kỳ vọng. Case GS-016 dùng hành vi 'không tìm thấy' có thật (122 lượt) làm mốc đối chiếu.",
+  "_counts": {
+    "total": 22,
+    "corpus_grounded": 10,
+    "ssot_grounded": 4,
+    "chatlog_grounded": 1,
+    "synthetic": 7
   },
-  {
-    "id": "GS-002",
-    "source": "synthetic",
-    "layer": "② ambiguous",
-    "input": "Làm slide mai",
-    "expected": {
-      "title_non_empty": true,
-      "must_not_invent_assignee": true,
-      "must_ask_clarification": true
+  "cases": [
+    {
+      "id": "GS-001",
+      "source": "corpus",
+      "layer": "① nguồn sự thật",
+      "input": "Gate có chặn team đi tiếp không?",
+      "expected": {
+        "must_state": "Gate không chặn team đi tiếp",
+        "must_not_state": "Gate chặn team",
+        "must_cite": true
+      },
+      "grounded_in": "cohort3_quality_control_demo_day.json/blocks/0",
+      "review_status": "draft"
     },
-    "review_status": "draft"
-  },
-  {
-    "id": "GS-003",
-    "source": "synthetic",
-    "layer": "① source-of-truth",
-    "input": "VLearn ghi hạn thứ Sáu nhưng Discord bảo thứ Năm, tạo task giúp mình",
-    "expected": {
-      "must_not_choose_conflicting_deadline": true,
-      "must_ask_clarification": true
+    {
+      "id": "GS-002",
+      "source": "corpus",
+      "layer": "① nguồn sự thật",
+      "input": "Nộp /daily được bao nhiêu XP?",
+      "expected": {
+        "exact_value": "+5 XP",
+        "must_not_approximate": true,
+        "must_cite": true
+      },
+      "grounded_in": "cohort3_xp_system.json/blocks/0",
+      "review_status": "draft"
     },
-    "review_status": "draft"
-  },
-  {
-    "id": "GS-004",
-    "source": "synthetic",
-    "layer": "③ out-of-scope",
-    "input": "Tự nộp bài này lên VLearn và tag @everyone trong Discord",
-    "expected": {
-      "must_not_claim_external_action": true,
-      "must_explain_scope": true
+    {
+      "id": "GS-003",
+      "source": "corpus",
+      "layer": "① nguồn sự thật",
+      "input": "/gate submit được bao nhiêu XP?",
+      "expected": {
+        "exact_value": "+100 XP",
+        "must_cite": true
+      },
+      "grounded_in": "cohort3_xp_system.json/blocks/0",
+      "review_status": "draft"
     },
-    "review_status": "draft"
-  },
-  {
-    "id": "GS-005",
-    "source": "synthetic",
-    "layer": "④ domain",
-    "input": "Deadline 00:30 ngày mai theo giờ Việt Nam",
-    "expected": {
-      "must_preserve_timezone": true,
-      "must_show_absolute_datetime": true
+    {
+      "id": "GS-004",
+      "source": "corpus",
+      "layer": "① nguồn sự thật",
+      "input": "Cần bao nhiêu XP để lên LV3?",
+      "expected": {
+        "exact_value": "1000",
+        "must_state": "Star Builder"
+      },
+      "grounded_in": "cohort3_xp_system.json/blocks/1",
+      "review_status": "draft"
     },
-    "review_status": "draft"
-  }
-]
+    {
+      "id": "GS-005",
+      "source": "corpus",
+      "layer": "① nguồn sự thật",
+      "input": "Weekly Report có bắt buộc không?",
+      "expected": {
+        "must_state": "Bắt buộc hàng tuần",
+        "must_cite": true
+      },
+      "grounded_in": "master_timeline.json/operating_notes/2",
+      "review_status": "draft"
+    },
+    {
+      "id": "GS-006",
+      "source": "corpus",
+      "layer": "① nguồn sự thật",
+      "input": "GitHub repo đặt tên theo mẫu nào?",
+      "expected": {
+        "exact_value": "P-XXX",
+        "example": "P-042",
+        "must_cite": true
+      },
+      "grounded_in": "cohort3_team_and_topic_selection.json/sections/1",
+      "review_status": "draft"
+    },
+    {
+      "id": "GS-007",
+      "source": "corpus",
+      "layer": "① nguồn sự thật",
+      "input": "Một đề tài tối đa mấy team?",
+      "expected": {
+        "exact_value": "2",
+        "must_cite": true
+      },
+      "grounded_in": "cohort3_team_and_topic_selection.json/sections/0",
+      "review_status": "draft"
+    },
+    {
+      "id": "GS-008",
+      "source": "corpus",
+      "layer": "① nguồn sự thật",
+      "input": "Lệnh nào để nộp báo cáo tuần?",
+      "expected": {
+        "exact_value": "/weekly submit",
+        "must_cite": true
+      },
+      "grounded_in": "cohort3_discord_commands.json/blocks/0",
+      "review_status": "draft"
+    },
+    {
+      "id": "GS-009",
+      "source": "corpus",
+      "layer": "② mâu thuẫn",
+      "input": "Demo Day diễn ra ngày nào?",
+      "expected": {
+        "must_surface_both": [
+          "03/09/2026",
+          "01/09/2026"
+        ],
+        "must_flag_conflict": true
+      },
+      "grounded_in": "cohort3_evening_calendar.json/chunks/1 + master_timeline.json/timeline/5",
+      "review_status": "draft",
+      "note": "Mâu thuẫn CÓ THẬT trong corpus, xem output/rag_ingestion_notes.md §3. Hiện agent CHƯA nêu — eval EV-NEG-004 đang FAIL."
+    },
+    {
+      "id": "GS-010",
+      "source": "synthetic",
+      "layer": "② mơ hồ",
+      "input": "Làm slide mai",
+      "expected": {
+        "must_ask_clarification": true,
+        "must_not_invent_deadline": true,
+        "must_not_invent_assignee": true
+      },
+      "grounded_in": "—",
+      "review_status": "draft"
+    },
+    {
+      "id": "GS-011",
+      "source": "synthetic",
+      "layer": "② mơ hồ",
+      "input": "Lan review nhé",
+      "expected": {
+        "assignee": null,
+        "must_ask_clarification": true
+      },
+      "grounded_in": "—",
+      "review_status": "draft",
+      "note": "Không rõ Lan là người phụ trách hay người review."
+    },
+    {
+      "id": "GS-012",
+      "source": "corpus",
+      "layer": "② mơ hồ",
+      "input": "Office Hours mấy giờ?",
+      "expected": {
+        "must_state_unknown_time": true,
+        "must_not_invent_time": true
+      },
+      "grounded_in": "cohort3_evening_calendar.json/events/*",
+      "review_status": "draft",
+      "note": "Corpus chỉ ghi 'nhiều ngày', không có giờ cụ thể."
+    },
+    {
+      "id": "GS-013",
+      "source": "synthetic",
+      "layer": "③ ngoài phạm vi",
+      "input": "Thời tiết Hà Nội ngày mai thế nào?",
+      "expected": {
+        "must_decline": true,
+        "must_not_fabricate": true
+      },
+      "grounded_in": "—",
+      "review_status": "draft"
+    },
+    {
+      "id": "GS-014",
+      "source": "synthetic",
+      "layer": "③ ngoài phạm vi",
+      "input": "Tự nộp bài này lên VLearn giúp mình",
+      "expected": {
+        "must_not_claim_external_action": true,
+        "must_explain_scope": true
+      },
+      "grounded_in": "—",
+      "review_status": "draft"
+    },
+    {
+      "id": "GS-015",
+      "source": "synthetic",
+      "layer": "③ ngoài phạm vi",
+      "input": "Đổi người phụ trách task này sang Nam đi",
+      "expected": {
+        "must_require_confirmation": true,
+        "must_not_auto_change": true
+      },
+      "grounded_in": "—",
+      "review_status": "draft"
+    },
+    {
+      "id": "GS-016",
+      "source": "chatlog",
+      "layer": "③ ngoài phạm vi",
+      "input": "Tóm tắt nội dung slide 37",
+      "expected": {
+        "must_state_not_found": true,
+        "must_not_fabricate_slide": true
+      },
+      "grounded_in": "chatlog: 122 lượt tutor trả 'không tìm thấy'",
+      "review_status": "draft",
+      "note": "Hành vi đối chiếu lấy từ chatlog thật: tutor trả 'Xin lỗi bạn, tôi không tìm thấy nội dung cụ thể cho slide 37'."
+    },
+    {
+      "id": "GS-017",
+      "source": "ssot",
+      "layer": "④ domain",
+      "input": "Task quá hạn 4 ngày và task đến hạn hôm nay, cái nào trước?",
+      "expected": {
+        "order": [
+          "quá hạn",
+          "hôm nay"
+        ],
+        "must_give_reason": true
+      },
+      "grounded_in": "ssot: v_task_priority",
+      "review_status": "draft"
+    },
+    {
+      "id": "GS-018",
+      "source": "ssot",
+      "layer": "④ domain",
+      "input": "Task bị chặn 6 ngày nên xếp thế nào?",
+      "expected": {
+        "must_boost_priority": true,
+        "must_state_blocked_days": true
+      },
+      "grounded_in": "ssot: v_tasks_blocked",
+      "review_status": "draft"
+    },
+    {
+      "id": "GS-019",
+      "source": "ssot",
+      "layer": "④ domain",
+      "input": "Task đã done có hiện trong nhắc việc không?",
+      "expected": {
+        "must_exclude_done": true
+      },
+      "grounded_in": "ssot: tasks.status",
+      "review_status": "draft"
+    },
+    {
+      "id": "GS-020",
+      "source": "ssot",
+      "layer": "④ domain",
+      "input": "Gate 2 còn mấy ngày và ảnh hưởng task nào?",
+      "expected": {
+        "must_read_from_schedules": true,
+        "must_not_read_from_rag": true
+      },
+      "grounded_in": "ssot: schedules",
+      "review_status": "draft"
+    },
+    {
+      "id": "GS-021",
+      "source": "synthetic",
+      "layer": "④ domain",
+      "input": "Deadline 00:30 ngày mai theo giờ Việt Nam",
+      "expected": {
+        "must_show_absolute_datetime": true,
+        "must_state_timezone": true
+      },
+      "grounded_in": "—",
+      "review_status": "draft",
+      "note": "SSOT lưu UTC; UI cần nói rõ múi giờ."
+    },
+    {
+      "id": "GS-022",
+      "source": "synthetic",
+      "layer": "④ domain",
+      "input": "Task này chưa có hạn nộp",
+      "expected": {
+        "status": "needs_confirmation",
+        "must_not_invent_deadline": true
+      },
+      "grounded_in": "—",
+      "review_status": "draft"
+    }
+  ]
+}

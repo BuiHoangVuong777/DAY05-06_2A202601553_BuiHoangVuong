@@ -1,0 +1,197 @@
+{
+    "doc_type": "cohort_3_knowledge_base",
+    "language": "vi",
+    "title": "Cohort 3 Knowledge Base",
+    "metadata": {
+        "cohort": "Cohort 3",
+        "source": "program_guidelines",
+        "priority": 1
+    },
+    "documents": [
+        {
+            "doc_id": "team_and_topic_selection",
+            "title": "Hình thành team & chọn đề tài",
+            "summary": "Quy trình thành lập team và chọn đề tài. Team được tự do ghép/lập đội trên nền tảng, chọn đề tài từ ngân hàng đề, tối đa 2 teams cho mỗi đề tài. Thời gian tự do ghép đội kết thúc vào 25/07, sau đó hệ thống tự động ghép đội.",
+            "sections": [
+                {
+                    "section_id": "team_formation",
+                    "title": "Quy trình thành lập team",
+                    "content": [
+                        "Các bạn tự do ghép / lập đội trên nền tảng.",
+                        "Team chọn đề tài từ ngân hàng đề.",
+                        "Mỗi đề tài tối đa 2 teams / đề tài.",
+                        "Thời gian tự do ghép / lập đội đến hết 25/07.",
+                        "Sau thời gian này hệ thống sẽ ghép đội tự động."
+                    ],
+                    "keywords": [
+                        "team",
+                        "topic selection",
+                        "deadline",
+                        "auto matching"
+                    ]
+                },
+                {
+                    "section_id": "naming_conventions",
+                    "title": "Quy định đặt tên",
+                    "content": [
+                        "GitHub Repo theo mẫu P-XXX, ví dụ P-042.",
+                        "Discord channel theo mẫu #t-XXX, ví dụ t-042.",
+                        "Deploy URL theo mẫu c3-app-XXX, ví dụ c3-app-042.io.vn.",
+                        "Cohort 4 dùng mẫu c4-app-XXX.",
+                        "Zoom Name theo mẫu G-YY-TXXX - Họ và tên, ví dụ G01-T004-Nguyễn Văn An."
+                    ],
+                    "keywords": [
+                        "github",
+                        "discord",
+                        "deploy url",
+                        "zoom name"
+                    ]
+                }
+            ]
+        },
+        {
+            "doc_id": "weekly_timeline",
+            "title": "Lộ trình 6 tuần: Từ Ý tưởng đến Demo Day",
+            "summary": "Lộ trình 6 tuần gồm Kick-off, chốt đề tài, xây dựng MVP, hoàn thiện MVP, nộp hồ sơ Demo Day và Demo Day.",
+            "sections": [
+                {
+                    "section_id": "week_1",
+                    "title": "Tuần 1 (23/07 - 29/07)",
+                    "content": [
+                        "Kick-off & Lập đội.",
+                        "Ổn định đội ngũ, làm quen với các công cụ như Discord, GitHub, AI Log."
+                    ],
+                    "status": "Đã xong"
+                },
+                {
+                    "section_id": "week_2",
+                    "title": "Tuần 2 (30/07 - 05/08)",
+                    "content": [
+                        "Gate 1 – Chốt đề tài.",
+                        "Khảo sát, phân tích đề bài, hoàn thiện Brief, PRD và Workflow.",
+                        "Dùng lệnh /gate submit để nộp link tài liệu hoặc repo."
+                    ],
+                    "status": "Hiện tại",
+                    "keywords": [
+                        "/gate submit",
+                        "brief",
+                        "prd",
+                        "workflow"
+                    ]
+                },
+                {
+                    "section_id": "week_3",
+                    "title": "Tuần 3 (06/08 - 12/08)",
+                    "content": [
+                        "Xây dựng MVP đầu tiên.",
+                        "Bắt đầu code những tính năng cốt lõi nhất."
+                    ]
+                },
+                {
+                    "section_id": "week_4",
+                    "title": "Tuần 4 (13/08 - 19/08)",
+                    "content": [
+                        "Gate 2 – Hoàn thiện MVP.",
+                        "Tối ưu hóa sản phẩm dựa trên feedback của Mentor và người dùng thử.",
+                        "Nộp Gate 2 để chuẩn bị cho giai đoạn nước rút."
+                    ]
+                },
+                {
+                    "section_id": "week_5",
+                    "title": "Tuần 5 (20/08 - 26/08)",
+                    "content": [
+                        "Nộp hồ sơ Demo Day.",
+                        "Hoàn thiện sản phẩm cuối cùng, chuẩn bị slide thuyết trình và nộp hồ sơ doanh nghiệp."
+                    ]
+                },
+                {
+                    "section_id": "week_6",
+                    "title": "Tuần 6 (01/09/2026)",
+                    "content": [
+                        "DEMO DAY!",
+                        "Ngày hội tỏa sáng của tất cả các team."
+                    ]
+                }
+            ]
+        },
+        {
+            "doc_id": "weekly_runbook",
+            "title": "Chương trình hàng tuần",
+            "summary": "Chương trình hàng tuần gồm stand up hằng ngày, coaching breakout room với mentor cố định, và mentoring 1-1 khi cần hỗ trợ trực tiếp.",
+            "sections": [
+                {
+                    "section_id": "daily_standup",
+                    "title": "Stand Up hằng ngày",
+                    "content": [
+                        "Cập nhật việc đã làm hôm qua.",
+                        "Cập nhật việc đang làm hôm nay.",
+                        "Cập nhật những việc nào đang gặp vấn đề."
+                    ]
+                },
+                {
+                    "section_id": "coaching_breakout_room",
+                    "title": "Coaching Breakout Room",
+                    "content": [
+                        "Mentor cố định nhóm teams suốt 6 tuần.",
+                        "Mỗi team cần submit weekly report trước mỗi buổi Coaching (Mentor Duty)."
+                    ]
+                },
+                {
+                    "section_id": "mentoring_1on1",
+                    "title": "Mentoring 1-1",
+                    "content": [
+                        "Tùy theo thời điểm.",
+                        "Mentor / BTC hỗ trợ trực tiếp."
+                    ]
+                },
+                {
+                    "section_id": "workshop_curriculum",
+                    "title": "Lịch trình Workshop",
+                    "content": [
+                        "Kick-off — Chia nhóm, chọn đề, khởi tạo repo.",
+                        "Problem → MVP Canvas.",
+                        "PM & team cowork — soft skills, rules, xử lý xung đột.",
+                        "Vibe coding 101 — by team.",
+                        "AI Product Design — UX patterns & prototyping.",
+                        "Tư duy Product — cho người làm sản phẩm.",
+                        "First Working Agent — LLM + tool calling.",
+                        "RAG Pipeline — Ingestion, chunking, retrieval.",
+                        "Multi-Step Agent — Plan → execute → validate.",
+                        "MCP & Multi-Agent — Protocol & orchestration.",
+                        "Optimize & Evaluate — Quality, latency, cost.",
+                        "Guardrails & Reliability — Safety & error handling.",
+                        "Go Live — CI/CD, cloud deploy, observability.",
+                        "The Pitch — Product narrative & investor demo.",
+                        "Data pipeline — chủ đề bổ sung.",
+                        "Recommendation — chủ đề bổ sung."
+                    ]
+                }
+            ]
+        },
+        {
+            "doc_id": "support_system",
+            "title": "Hệ thống hỗ trợ",
+            "summary": "Hệ thống hỗ trợ gồm server nhắc stand up, deadline, theo dõi độ active học viên, cảnh báo team gặp rủi ro và chatbot hỗ trợ hỏi đáp 24/7.",
+            "sections": [
+                {
+                    "section_id": "system_server",
+                    "title": "Hệ thống Server",
+                    "content": [
+                        "Nhắc stand up.",
+                        "Nhắc deadline.",
+                        "Theo dõi độ active học viên.",
+                        "Cảnh báo team gặp rủi ro (at-risk)."
+                    ]
+                },
+                {
+                    "section_id": "kute_bot",
+                    "title": "Chatbot hỗ trợ hỏi đáp",
+                    "content": [
+                        "Hỏi đáp về các thông tin chương trình build phase.",
+                        "Trợ lý 24/7 hỗ trợ giải đáp thắc mắc @Trợ lý Kute."
+                    ]
+                }
+            ]
+        }
+    ]
+}

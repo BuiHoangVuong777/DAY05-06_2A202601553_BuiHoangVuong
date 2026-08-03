@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đăng nhập — VLearn</title>
+  <style>
+    /* Bảng màu lấy theo index.html (cam VLearn #f97316) để giao diện đồng nhất. */
+    :root {
+      --cam: #f97316; --cam-dam: #ea580c; --nen: #f8fafc; --the: #ffffff;
+      --chu: #1e293b; --chu-nhat: #64748b; --vien: #e2e8f0; --loi: #dc2626;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh; display: grid; place-items: center;
+      background: var(--nen); color: var(--chu); padding: 20px;
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+    .the {
+      width: 100%; max-width: 400px; background: var(--the);
+      border: 1px solid var(--vien); border-radius: 16px; padding: 32px;
+      box-shadow: 0 1px 3px rgba(0,0,0,.04), 0 12px 32px rgba(0,0,0,.06);
+    }
+    .dau { text-align: center; margin-bottom: 26px; }
+    .logo {
+      width: 46px; height: 46px; margin: 0 auto 14px; border-radius: 13px;
+      background: var(--cam); color: #fff; display: grid; place-items: center;
+      font-weight: 800; font-size: 17px;
+    }
+    h1 { font-size: 20px; margin: 0 0 6px; font-weight: 800; letter-spacing: -.02em; }
+    .phu { font-size: 13.5px; color: var(--chu-nhat); margin: 0; }
+    label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+    .truong { margin-bottom: 16px; }
+    input {
+      width: 100%; padding: 11px 13px; font-size: 15px; font: inherit; font-size: 15px;
+      border: 1px solid var(--vien); border-radius: 9px; background: var(--nen); color: var(--chu);
+    }
+    input:focus { outline: 2px solid var(--cam); outline-offset: -1px; border-color: transparent; }
+    button {
+      width: 100%; padding: 12px; font: inherit; font-size: 15px; font-weight: 700;
+      border: 0; border-radius: 9px; background: var(--cam); color: #fff; cursor: pointer;
+      margin-top: 4px;
+    }
+    button:hover { background: var(--cam-dam); }
+    .loi {
+      display: none; margin-bottom: 16px; padding: 10px 13px; border-radius: 9px;
+      background: #fef2f2; border: 1px solid #fecaca; color: var(--loi); font-size: 13.5px;
+    }
+    .loi.hien { display: block; }
+    .ghi-chu {
+      margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--vien);
+      font-size: 12px; color: var(--chu-nhat); line-height: 1.6; text-align: center;
+    }
+    .nhan {
+      display: inline-block; font-size: 10.5px; font-weight: 700; letter-spacing: .05em;
+      text-transform: uppercase; padding: 2px 7px; border-radius: 4px;
+      background: #fef3c7; color: #92400e; margin-bottom: 6px;
+    }
+  </style>
+</head>
+<body>
+  <main class="the">
+    <div class="dau">
+      <div class="logo">VL</div>
+      <h1>Đăng nhập VLearn</h1>
+      <p class="phu">Trợ lý nhắc tiến độ học tập</p>
+    </div>
+
+    <!-- Thông báo lỗi hiển thị khi server chuyển hướng về /login?error=... -->
+    <div class="loi" id="loi" role="alert"></div>
+
+    <form method="post" action="/login" autocomplete="on">
+      <div class="truong">
+        <label for="username">Tên đăng nhập</label>
+        <input id="username" name="username" type="text" required autofocus
+               autocomplete="username" placeholder="Nhập tên đăng nhập">
+      </div>
+      <div class="truong">
+        <label for="password">Mật khẩu</label>
+        <input id="password" name="password" type="password" required
+               autocomplete="current-password" placeholder="Nhập mật khẩu">
+      </div>
+      <button type="submit">Đăng nhập</button>
+    </form>
+
+    <p class="ghi-chu">
+      <span class="nhan">Xác thực giả lập</span><br>
+      Đây là đăng nhập mô phỏng cho bản demo. Tài khoản lấy từ biến môi trường
+      <code>DEV_AUTH_USERNAME</code> / <code>DEV_AUTH_PASSWORD</code>, không phải tài khoản VLearn thật.
+    </p>
+  </main>
+
+  <script>
+    // Server chuyển hướng kèm ?error=<mã>; hiển thị thông điệp tiếng Việt tương ứng.
+    const THONG_DIEP = {
+      sai: "Tên đăng nhập hoặc mật khẩu không đúng.",
+      thieu: "Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu.",
+      tat: "Đăng nhập đang bị tắt: chưa bật DEV_AUTH và dự án chưa có xác thực thật.",
+      het_phien: "Phiên đăng nhập đã kết thúc. Vui lòng đăng nhập lại.",
+    };
+    const ma = new URLSearchParams(location.search).get("error");
+    if (ma) {
+      const o = document.getElementById("loi");
+      o.textContent = THONG_DIEP[ma] || "Không đăng nhập được.";
+      o.classList.add("hien");
+    }
+  </script>
+</body>
+</html>

@@ -54,8 +54,8 @@
         </div>
         <a href="/" class="bg-slate-50 border border-slate-200 text-slate-600 hover:bg-slate-100 px-4 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1 shadow-sm">⬅ Quay lại Tổng quan</a>
         <div class="flex items-center gap-2 bg-slate-50 border border-slate-100 rounded-xl p-1.5 pr-3">
-          <div class="h-8 w-8 bg-amber-500 text-white rounded-full flex items-center justify-center font-bold text-sm">P</div>
-          <div><p class="text-xs font-bold text-slate-700">Phong</p><p class="text-[10px] text-amber-600 font-semibold">Zone 3</p></div>
+          <div id="tl-chu-cai" class="h-8 w-8 bg-amber-500 text-white rounded-full flex items-center justify-center font-bold text-sm">?</div>
+          <div id="tl-hop-ten"><p id="tl-ten" class="text-xs font-bold text-slate-700">…</p><p id="tl-nhom" class="text-[10px] text-amber-600 font-semibold">…</p></div>
         </div>
       </div>
     </header>
@@ -564,5 +564,27 @@
 
     renderAll();
   </script>
+
+<script>
+  // Danh tính động: lấy từ phiên đăng nhập hiện tại, không hardcode.
+  (function () {
+    fetch("/api/me", { credentials: "same-origin" })
+      .then(function (r) { return r.json(); })
+      .then(function (me) {
+        var p = me && me.profile;
+        if (!p) return;                       // đăng nhập dự phòng -> giữ nguyên
+        var phan = String(p.display_name || "").trim().split(/\s+/);
+        var ten = phan[phan.length - 1] || "bạn";
+        var el;
+        if ((el = document.getElementById("tl-ten"))) el.textContent = ten;
+        if ((el = document.getElementById("tl-chu-cai"))) el.textContent = ten.charAt(0).toUpperCase();
+        if ((el = document.getElementById("tl-nhom"))) {
+          el.textContent = (p.team_name || "") + (p.role ? " · " + p.role : "");
+        }
+        if ((el = document.getElementById("tl-hop-ten")) && p.email) el.title = p.email;
+      })
+      .catch(function () { /* không lấy được hồ sơ -> giữ chỗ '…' */ });
+  })();
+</script>
 </body>
 </html>

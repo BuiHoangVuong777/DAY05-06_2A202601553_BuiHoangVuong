@@ -1,0 +1,78 @@
+{
+  "now_utc": "2026-07-30 20:28:30",
+  "counts": {
+    "users": 20,
+    "teams": 5,
+    "projects": 100,
+    "tasks": 90,
+    "overdue": 30,
+    "today": 15,
+    "due_soon": 30,
+    "this_week": 55,
+    "blocked": 15
+  },
+  "top_priority_task": {
+    "id": 1012,
+    "project_id": "t003",
+    "team_name": "Team Charlie",
+    "title": "Sửa lỗi pipeline ingest",
+    "assignee_name": "Đỗ Anh Tuấn",
+    "status": "blocked",
+    "priority": 5
+  },
+  "bottleneck": {
+    "blocker": "Thiếu quyền truy cập kho dữ liệu nguồn",
+    "task_count": 15,
+    "teams_affected_count": 5
+  },
+  "milestones": [
+    {
+      "id": 301,
+      "title": "Mentor review — Team Alpha",
+      "event_type": "review",
+      "team_id": 1
+    },
+    {
+      "id": 303,
+      "title": "Gate 2 — hạn nộp",
+      "event_type": "deadline",
+      "team_id": null
+    },
+    {
+      "id": 304,
+      "title": "Demo Day",
+      "event_type": "demo",
+      "team_id": null
+    }
+  ],
+  "team1_roster": [
+    {
+      "user_id": 1,
+      "full_name": "Bùi Hoàng Vương",
+      "role_in_team": "leader"
+    },
+    {
+      "user_id": 2,
+      "full_name": "Đặng Tiến Thành",
+      "role_in_team": "member"
+    },
+    {
+      "user_id": 3,
+      "full_name": "Phạm Xuân Phong",
+      "role_in_team": "member"
+    },
+    {
+      "user_id": 4,
+      "full_name": "Nguyễn Thu Hà",
+      "role_in_team": "member"
+    }
+  ],
+  "probe_task": {
+    "id": 1002,
+    "title": "Chuẩn bị slide demo",
+    "status": "todo",
+    "project_id": "t001",
+    "team_name": "Team Alpha",
+    "assignee_name": "Phạm Xuân Phong"
+  }
+}

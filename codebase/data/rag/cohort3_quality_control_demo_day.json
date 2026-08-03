@@ -1,0 +1,110 @@
+{
+    "doc_type": "quality_control_demo_day",
+    "language": "vi",
+    "title": "Kiểm soát chất lượng & Demo Day",
+    "section": {
+        "id": "quality_control",
+        "name": "QUALITY CONTROL · DEMO DAY"
+    },
+    "summary": "Tài liệu mô tả hệ thống gates không chặn team đi tiếp nhưng dùng để đánh giá tiến độ và giúp Mentor đề xuất hỗ trợ khẩn cấp khi chưa đạt chuẩn. Rubric chấm điểm gồm xác định và giải quyết vấn đề người dùng, hoàn thiện sản phẩm, kỹ năng AI, triển khai hạ tầng và chất lượng code. Bộ 10 deliverables bắt buộc gồm source code, README, sơ đồ kiến trúc, tài liệu đặc tả và thiết kế, tài liệu kiểm thử, nhật ký tuần, live URL, video demo, pitch deck và AI log.",
+    "metadata": {
+        "cohort": "Cohort 3",
+        "source": "quality_control_guideline",
+        "priority": 1
+    },
+    "blocks": [
+        {
+            "block_id": "gates",
+            "title": "Gates",
+            "type": "progress_assessment",
+            "content": [
+                "Gate không chặn team đi tiếp.",
+                "Gate dùng để đánh giá tiến độ.",
+                "Gate giúp Mentor đề xuất hỗ trợ khẩn cấp khi chưa đạt chuẩn."
+            ],
+            "metadata": {
+                "tags": [
+                    "gate",
+                    "assessment",
+                    "mentor support",
+                    "progress"
+                ]
+            }
+        },
+        {
+            "block_id": "rubric",
+            "title": "Rubric chấm điểm",
+            "type": "evaluation_criteria",
+            "content": [
+                "Xác định và giải quyết vấn đề người dùng.",
+                "Hoàn thiện sản phẩm.",
+                "Kỹ năng AI.",
+                "Triển khai hạ tầng.",
+                "Chất lượng Code."
+            ],
+            "metadata": {
+                "tags": [
+                    "rubric",
+                    "evaluation",
+                    "user problem",
+                    "product",
+                    "ai",
+                    "infrastructure",
+                    "code quality"
+                ]
+            }
+        },
+        {
+            "block_id": "deliverables",
+            "title": "10 Deliverables bắt buộc",
+            "type": "required_outputs",
+            "content": [
+                "Source code",
+                "README",
+                "Sơ đồ kiến trúc",
+                "Các tài liệu đặc tả, thiết kế",
+                "Tài liệu kiểm thử",
+                "Nhật ký tuần",
+                "Live URL",
+                "Video Demo",
+                "Pitch Deck",
+                "AI Log"
+            ],
+            "metadata": {
+                "tags": [
+                    "deliverables",
+                    "source code",
+                    "readme",
+                    "architecture",
+                    "testing",
+                    "weekly log",
+                    "live url",
+                    "video demo",
+                    "pitch deck",
+                    "ai log"
+                ]
+            }
+        }
+    ],
+    "keywords": [
+        "quality control",
+        "demo day",
+        "gate",
+        "rubric",
+        "deliverables",
+        "source code",
+        "readme",
+        "architecture",
+        "testing",
+        "weekly log",
+        "live url",
+        "video demo",
+        "pitch deck",
+        "ai log"
+    ],
+    "notes": [
+        "Gate là công cụ đánh giá tiến độ, không phải cổng chặn team.",
+        "Mentor có thể dùng gate để đề xuất hỗ trợ khẩn cấp nếu team chưa đạt chuẩn.",
+        "Deliverables cần được chuẩn bị đầy đủ trước Demo Day."
+    ]
+}

@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rag_schema.json",
+  "title": "RAG chunk record",
+  "description": "One JSON object per line in rag_chunks.jsonl. Produced by scripts/build_rag_chunks.py from codebase/data/rag/*.json. Every value is copied or deterministically rendered from a source file; none is generated or inferred by a model.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id", "source_file", "source_type", "title", "section", "content", "summary",
+    "keywords", "cohort", "version", "status", "priority", "updated_at",
+    "created_at", "day", "week", "event_type", "source_path", "source_pointer",
+    "language", "source_origin", "hash"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[^:]+::[a-z0-9-]*::[0-9a-f]{8}$",
+      "description": "Stable chunk id: <source-file-stem>::<pointer-slug>::<digest8>, where digest8 = first 8 hex of sha256('<source_file>#<source_pointer>'). Depends only on file name and JSON pointer, so it is identical across runs and machines and survives content edits.",
+      "examples": ["cohort3_xp_system::blocks-1::a983d3e1"]
+    },
+    "source_file": {
+      "type": "string",
+      "description": "Basename of the originating JSON file.",
+      "examples": ["master_timeline.json"]
+    },
+    "source_type": {
+      "type": ["string", "null"],
+      "description": "The originating file's own top-level `doc_type` value. Copied verbatim, not normalized into a controlled vocabulary.",
+      "examples": ["timeline", "schedule", "xp_system", "discord_commands", "cohort_guideline", "cohort_weekly_program", "quality_control_demo_day", "cohort_3_knowledge_base"]
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "description": "The chunk's own heading, from the source unit's `title`/`milestone`/`event_type`. For timeline weeks it is composed as 'Tuần <n> (<range>)' from the source `week` and `range` fields."
+    },
+    "section": {
+      "type": ["string", "null"],
+      "description": "Parent grouping: the file's `section.name` where present, or the parent document title for knowledge-base entries. Null where the source file declares no section (cohort3_evening_calendar.json).",
+      "examples": ["LAUNCH READINESS", "KUTEBOT · DISCORD", "SUPPORT", null]
+    },
+    "content": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Plain text, no markup. One source item per line, newline-separated. Object items are rendered by a fixed template per shape (command/description, level/name/threshold_xp, order/title/detail, title/detail/importance/reason) so no source field is dropped. This is the field to embed."
+    },
+    "summary": {
+      "type": "string",
+      "description": "EXTRACTIVE, 1-2 units max. Prose chunks: the first 1-2 sentences of `content`. List chunks: the first 2 lines joined with '; ', suffixed '; …' when more lines follow. Never model-generated, so it cannot introduce a claim absent from the source.",
+      "maxLength": 320
+    },
+    "keywords": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Union of the source unit's `tags`/`keywords` and the file-level `keywords`, in that order, casefold-deduplicated, first-spelling preserved. File-level terms are included so a chunk stays retrievable by document-wide vocabulary."
+    },
+    "cohort": {
+      "type": ["string", "null"],
+      "description": "From `metadata.cohort`. Null for master_timeline.json, which states no cohort anywhere — deliberately not inferred from sibling files.",
+      "examples": ["Cohort 3", null]
+    },
+    "version": {
+      "type": "string",
+      "const": "1.0.0",
+      "description": "Version of THIS chunk schema and the pipeline that emitted the record. Not a version of the source document — no source file carries one. Bump when the record shape or rendering rules change."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["active", "completed", "upcoming"],
+      "description": "Lifecycle. Grounded where the source states one: master_timeline `status` and knowledge-base week `status` map 'Đã xong'->completed, 'Hiện tại'->active, 'Upcoming'->upcoming. Every other chunk defaults to 'active' because no other source declares a lifecycle. Filter to active+upcoming for 'what is happening now' queries."
+    },
+    "priority": {
+      "type": ["integer", "null"],
+      "description": "Most specific source priority available (chunk > block/event > file `metadata.priority`); null when none is stated. CAUTION: each file uses its own scale — master_timeline uses 1-6 as week ordinals, other files use 1-2 as importance. Not globally comparable; safe to compare only within one source_file.",
+      "minimum": 1
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Filesystem mtime of the source file, UTC, second precision. NOT an authored/publication date — no source file carries a timestamp. Use for recency tie-breaks only, and re-derive after any git operation that rewrites mtimes."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Same filesystem mtime as `updated_at`. The sources carry no creation date; the field is present for schema compatibility and must not be read as authorship time."
+    },
+    "day": {
+      "type": ["string", "null"],
+      "format": "date",
+      "description": "ISO date when the chunk pins to exactly one calendar day. Null otherwise — including the Demo Day chunks, which span three dates (see rag_ingestion_notes.md)."
+    },
+    "week": {
+      "type": ["integer", "null"],
+      "minimum": 1,
+      "maximum": 6,
+      "description": "Program week 1-6, from the timeline `week` field or parsed from a 'Tuần <n>' heading. Null for chunks that are not week-scoped."
+    },
+    "event_type": {
+      "type": ["string", "null"],
+      "description": "Calendar event class, only present in cohort3_evening_calendar.json.",
+      "examples": ["Workshop", "Mentor Duty", "Office Hours", "Demo Day", null]
+    },
+    "source_path": {
+      "type": "string",
+      "description": "Repo-relative path to the source file.",
+      "examples": ["codebase/data/rag/master_timeline.json"]
+    },
+    "source_pointer": {
+      "type": "string",
+      "description": "RFC 6901 JSON Pointer to the exact source node this chunk was built from. With source_path it reconstructs the origin byte-for-byte: `jq '<pointer>' <source_path>`.",
+      "examples": ["/timeline/1", "/blocks/3", "/documents/3/sections/0"]
+    },
+    "language": {
+      "type": ["string", "null"],
+      "description": "The source file's declared `language`. All current sources are 'vi' (Vietnamese) — relevant when choosing a multilingual embedding model."
+    },
+    "source_origin": {
+      "type": ["string", "null"],
+      "description": "Provenance of the source material as declared by the file: its `source_type` (e.g. 'image') or `metadata.source`. Records that a chunk ultimately derives from a transcribed calendar image rather than authored text.",
+      "examples": ["calendar_image", "program_guidelines", "xp_guideline", "discord_command_reference"]
+    },
+    "hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "sha256 of NFC-normalized, whitespace-collapsed `content`. Drives exact-duplicate detection and lets ingestion skip unchanged chunks on re-runs. Changes if and only if the text changes."
+    }
+  }
+}

@@ -1,0 +1,136 @@
+{
+    "doc_type": "schedule",
+    "language": "vi",
+    "title": "Lịch tổng Cohort 3",
+    "subtitle": "20/07-05/09/2026 • Bắt đầu chính thức 23/07 • Giờ Việt Nam",
+    "source_type": "image",
+    "summary": "Lịch tổng Cohort 3 gồm các mốc Workshop, Mentor Duty, Office Hours và Demo Day trong giai đoạn 20/07-05/09/2026. Hoạt động lặp theo tuần, với Demo Day diễn ra vào 03/09, 04/09 và 05/09/2026.",
+    "metadata": {
+        "cohort": "Cohort 3",
+        "timezone": "Asia/Ho_Chi_Minh",
+        "start_date": "2026-07-20",
+        "official_start_date": "2026-07-23",
+        "end_date": "2026-09-05",
+        "source": "calendar_image",
+        "topics": [
+            "workshop",
+            "mentor duty",
+            "office hours",
+            "demo day"
+        ]
+    },
+    "events": [
+        {
+            "event_id": "evt_workshop_recurring",
+            "event_type": "Workshop",
+            "date_pattern": "nhiều ngày",
+            "description": "Workshop diễn ra nhiều ngày trong tuần, theo lịch thể hiện trên ảnh.",
+            "priority": 2,
+            "tags": [
+                "workshop",
+                "training"
+            ]
+        },
+        {
+            "event_id": "evt_mentor_duty_recurring",
+            "event_type": "Mentor Duty",
+            "date_pattern": "nhiều ngày",
+            "description": "Mentor Duty diễn ra nhiều ngày, có các khung giờ khác nhau tùy ngày.",
+            "priority": 2,
+            "tags": [
+                "mentor duty",
+                "support"
+            ]
+        },
+        {
+            "event_id": "evt_office_hours_recurring",
+            "event_type": "Office Hours",
+            "date_pattern": "nhiều ngày",
+            "description": "Office Hours được lặp lại nhiều buổi trong tuần, chủ yếu vào các ngày trong tuần và một số ngày cuối tuần.",
+            "priority": 2,
+            "tags": [
+                "office hours",
+                "support"
+            ]
+        },
+        {
+            "event_id": "evt_demo_day",
+            "event_type": "Demo Day",
+            "date_pattern": [
+                "2026-09-03",
+                "2026-09-04",
+                "2026-09-05"
+            ],
+            "description": "Demo Day diễn ra trong 3 ngày liên tiếp cuối lịch.",
+            "priority": 1,
+            "tags": [
+                "demo day",
+                "final presentation"
+            ]
+        }
+    ],
+    "chunks": [
+        {
+            "chunk_id": "schedule_overview",
+            "title": "Tổng quan lịch Cohort 3",
+            "content": "Lịch tổng Cohort 3 từ 20/07 đến 05/09/2026, bắt đầu chính thức ngày 23/07 theo giờ Việt Nam. Lịch gồm các nhóm hoạt động Workshop, Mentor Duty, Office Hours và Demo Day.",
+            "metadata": {
+                "doc_type": "schedule",
+                "chunk_type": "overview",
+                "priority": 1,
+                "tags": [
+                    "overview",
+                    "cohort 3"
+                ]
+            }
+        },
+        {
+            "chunk_id": "schedule_demo_day",
+            "title": "Demo Day",
+            "content": "Demo Day diễn ra vào các ngày 03/09/2026, 04/09/2026 và 05/09/2026.",
+            "metadata": {
+                "doc_type": "schedule",
+                "chunk_type": "critical_event",
+                "event_type": "Demo Day",
+                "priority": 1,
+                "tags": [
+                    "demo day",
+                    "deadline",
+                    "final"
+                ]
+            }
+        },
+        {
+            "chunk_id": "schedule_recurring_events",
+            "title": "Sự kiện lặp lại",
+            "content": "Workshop, Mentor Duty và Office Hours xuất hiện lặp lại trong nhiều ngày xuyên suốt lịch. Các sự kiện này là những khối sinh hoạt/hỗ trợ định kỳ của Cohort 3.",
+            "metadata": {
+                "doc_type": "schedule",
+                "chunk_type": "recurring",
+                "priority": 2,
+                "tags": [
+                    "workshop",
+                    "mentor duty",
+                    "office hours",
+                    "recurring"
+                ]
+            }
+        }
+    ],
+    "keywords": [
+        "Cohort 3",
+        "lịch tổng",
+        "Workshop",
+        "Mentor Duty",
+        "Office Hours",
+        "Demo Day",
+        "2026-07-23",
+        "2026-09-05",
+        "giờ Việt Nam"
+    ],
+    "notes": [
+        "Lịch có thể được BTC cập nhật theo thông báo chính thức.",
+        "Nên ưu tiên truy vấn Demo Day vì đây là mốc cuối quan trọng nhất.",
+        "Các sự kiện lặp lại nên được xử lý như recurring events trong RAG."
+    ]
+}

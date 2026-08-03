@@ -1,0 +1,24 @@
+{
+    "doc_type": "cohort_guide",
+    "topic": "cohort3",
+    "sections": [
+        {
+            "section_id": "schedule",
+            "title": "Lịch tổng Cohort 3",
+            "content": "...",
+            "metadata": {
+                "type": "calendar",
+                "priority": 1
+            }
+        },
+        {
+            "section_id": "weekly_rhythm",
+            "title": "Nhịp vận hành hàng tuần",
+            "content": "...",
+            "metadata": {
+                "type": "operating_rhythm",
+                "priority": 2
+            }
+        }
+    ]
+}

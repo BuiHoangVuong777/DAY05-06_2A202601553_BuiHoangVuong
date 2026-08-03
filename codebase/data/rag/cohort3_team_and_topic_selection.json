@@ -1,0 +1,74 @@
+{
+    "doc_type": "cohort_guideline",
+    "language": "vi",
+    "title": "Hình thành team & chọn đề tài",
+    "section": {
+        "id": "team_and_topic_selection",
+        "name": "TỔNG QUAN CHƯƠNG TRÌNH"
+    },
+    "summary": "Quy trình thành lập team và quy định đặt tên cho các tài nguyên của dự án. Team được tự do ghép/lập đội trên nền tảng, chọn đề tài từ ngân hàng đề, tối đa 2 teams cho 1 đề tài. Việc tự do ghép team kết thúc vào ngày 25/07, sau đó hệ thống sẽ tự động ghép đội.",
+    "metadata": {
+        "cohort": "Cohort 3",
+        "topic": "team formation and naming",
+        "deadline": "2026-07-25",
+        "source": "program_guideline",
+        "priority": 1
+    },
+    "sections": [
+        {
+            "section_id": "team_formation",
+            "title": "Quy trình thành lập team",
+            "content": [
+                "Các bạn tự do ghép / lập đội trên nền tảng.",
+                "Team chọn đề tài từ ngân hàng đề.",
+                "Mỗi đề tài tối đa 2 teams.",
+                "Thời gian tự do ghép / lập đội đến hết 25/07.",
+                "Sau thời gian này hệ thống sẽ ghép đội tự động."
+            ],
+            "metadata": {
+                "type": "workflow",
+                "tags": [
+                    "team",
+                    "formation",
+                    "topic selection",
+                    "deadline"
+                ]
+            }
+        },
+        {
+            "section_id": "naming_rules",
+            "title": "Quy định đặt tên",
+            "content": [
+                "GitHub Repo phải theo mẫu P-XXX, ví dụ P-042.",
+                "Discord channel phải theo mẫu #t-XXX, ví dụ t-042.",
+                "Deploy URL phải theo mẫu c3-app-XXX, ví dụ c3-app-042.io.vn.",
+                "Các bạn thuộc cohort 4 dùng mẫu c4-app-XXX.",
+                "Zoom Name phải theo mẫu G-YY-TXXX - Họ và tên, ví dụ G01-T004-Nguyễn Văn An."
+            ],
+            "metadata": {
+                "type": "naming_convention",
+                "tags": [
+                    "github",
+                    "discord",
+                    "deploy url",
+                    "zoom name"
+                ]
+            }
+        }
+    ],
+    "keywords": [
+        "team formation",
+        "topic selection",
+        "bank of topics",
+        "p-xxx",
+        "t-xxx",
+        "c3-app-xxx",
+        "zoom name",
+        "25/07",
+        "auto matching"
+    ],
+    "notes": [
+        "Sau ngày 25/07, hệ thống sẽ tự động ghép đội.",
+        "Mỗi đề tài chỉ nhận tối đa 2 teams."
+    ]
+}

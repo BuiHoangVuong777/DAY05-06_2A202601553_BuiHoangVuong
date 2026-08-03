@@ -55,15 +55,79 @@
       border-radius: 20px;
     }
   </style>
+
+  <!-- ===== Trợ lý AI: widget nổi góc dưới phải (giữ nguyên UX của rag-app) ===== -->
+  <style>
+    #tro-ly-nut {
+      position: fixed; right: 22px; bottom: 22px; z-index: 9998;
+      width: 56px; height: 56px; border: 0; border-radius: 50%; cursor: pointer;
+      background: #f97316; color: #fff; display: none; place-items: center;
+      box-shadow: 0 4px 14px rgba(0,0,0,.2); transition: transform .15s;
+    }
+    #tro-ly-nut:hover { transform: scale(1.06); background: #ea580c; }
+    #tro-ly-nut svg { width: 26px; height: 26px; }
+    #tro-ly-khung {
+      position: fixed; right: 22px; bottom: 90px; z-index: 9999;
+      width: 360px; max-width: calc(100vw - 32px); display: none;
+      flex-direction: column; background: #fff; border: 1px solid #e2e8f0;
+      border-radius: 14px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,.16);
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    }
+    #tro-ly-khung.mo { display: flex; }
+    #tro-ly-dau {
+      display: flex; align-items: center; gap: 8px; padding: 11px 14px;
+      background: #fff7ed; border-bottom: 1px solid #fed7aa;
+    }
+    #tro-ly-dau b { font-size: 13px; color: #9a3412; }
+    #tro-ly-dong {
+      margin-left: auto; border: 0; background: transparent; cursor: pointer;
+      font-size: 19px; line-height: 1; color: #9a3412; padding: 2px 6px; border-radius: 6px;
+    }
+    #tro-ly-dong:hover { background: #ffedd5; }
+    #tro-ly-log {
+      height: 320px; overflow-y: auto; padding: 13px;
+      display: flex; flex-direction: column; gap: 10px; background: #f8fafc;
+    }
+    .tl-tin { max-width: 88%; padding: 8px 11px; border-radius: 11px; font-size: 13px; line-height: 1.5; }
+    .tl-toi { align-self: flex-end; background: #f97316; color: #fff; border-bottom-right-radius: 4px; }
+    .tl-bot { align-self: flex-start; background: #fff; border: 1px solid #e2e8f0; border-bottom-left-radius: 4px; }
+    .tl-loi { align-self: flex-start; background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; }
+    .tl-noi-dung { white-space: pre-wrap; overflow-wrap: anywhere; }
+    .tl-nguon { margin-top: 7px; border-top: 1px solid #e2e8f0; padding-top: 6px; }
+    .tl-nguon summary { cursor: pointer; font-size: 11px; color: #64748b; }
+    .tl-nguon div { font-size: 11px; color: #64748b; padding: 3px 0; word-break: break-all; }
+    .tl-cho { display: flex; gap: 4px; align-items: center; color: #64748b; font-size: 12.5px; }
+    .tl-cho i { width: 5px; height: 5px; border-radius: 50%; background: currentColor; animation: tlnhay 1.2s infinite; }
+    .tl-cho i:nth-child(3) { animation-delay: .15s } .tl-cho i:nth-child(4) { animation-delay: .3s }
+    @keyframes tlnhay { 0%,60%,100% { opacity:.25 } 30% { opacity:1 } }
+    @media (prefers-reduced-motion: reduce) { .tl-cho i { animation: none; opacity: .6 } }
+    #tro-ly-form { display: flex; gap: 7px; padding: 10px; border-top: 1px solid #e2e8f0; align-items: flex-end; }
+    #tro-ly-o {
+      flex: 1; resize: none; font: inherit; font-size: 13px; padding: 8px 10px;
+      border: 1px solid #e2e8f0; border-radius: 9px; max-height: 90px; overflow-y: auto;
+    }
+    #tro-ly-o:focus { outline: 2px solid #f97316; outline-offset: -1px; }
+    #tro-ly-gui {
+      flex: none; width: 34px; height: 34px; border: 0; border-radius: 9px;
+      background: #f97316; color: #fff; cursor: pointer; display: grid; place-items: center;
+    }
+    #tro-ly-gui:disabled { opacity: .45; cursor: not-allowed; }
+    @media (max-width: 520px) {
+      #tro-ly-khung { right: 12px; left: 12px; width: auto; bottom: 84px; }
+      #tro-ly-log { height: 46vh; }
+    }
+  </style>
 </head>
 <body class="text-slate-800 antialiased min-h-screen">
+  <div id="tai-banner" style="display:none;position:fixed;top:0;left:0;right:0;z-index:9999;padding:8px 16px;font:13px/1.4 system-ui,sans-serif;text-align:center"></div>
   <div id="root"></div>
 
   <!-- React App Code -->
   <script type="text/babel">
     const { useState, useEffect } = React;
 
-    // Initial Mock Data
+    // KHUNG TẠM lúc đang tải. Dữ liệu thật lấy từ GET /api/dashboard trong useEffect
+    // bên dưới và sẽ ghi đè toàn bộ hai mảng này.
     const initialWeeks = [
       {
         id: 1,
@@ -181,10 +245,110 @@
       }
     ];
 
+    // ---- Danh tính người đang đăng nhập -------------------------------
+    // Tên tiếng Việt: từ cuối là tên gọi ("Bùi Hoàng Vương" -> "Vương").
+    // Mọi hàm đều chịu được nguoiDung = null (lúc chưa tải xong).
+    function tenGoi(u) {
+      if (!u || !u.display_name) return "bạn";
+      const phan = String(u.display_name).trim().split(/\s+/);
+      return phan[phan.length - 1] || "bạn";
+    }
+    function chuCaiDau(u) {
+      const t = tenGoi(u);
+      return (t && t !== "bạn") ? t.charAt(0).toUpperCase() : "?";
+    }
+    function nhomCua(u) { return (u && u.team_name) ? u.team_name : "Chưa rõ nhóm"; }
+    function emailCua(u) { return (u && u.email) ? u.email : ""; }
+    function vaiTroCua(u) { return (u && u.role) ? u.role : ""; }
+
     function App() {
+      const [nguoiDung, setNguoiDung] = useState(null);   // hồ sơ từ /api/dashboard
       const [notifications, setNotifications] = useState(initialNotifications);
       const [weeks, setWeeks] = useState(initialWeeks);
       const [selectedWeek, setSelectedWeek] = useState(weeks.find(w => w.status === 'current') || weeks[1]);
+
+      // ------- Dữ liệu THẬT: GET /api/dashboard (SSOT + lộ trình 6 tuần) -------
+      useEffect(() => {
+        let huy = false;
+        // Đăng xuất: gọi API xoá phiên rồi tự điều hướng. Không đụng state React
+        // (trang sẽ rời đi ngay), tránh render lại với dữ liệu rỗng gây lỗi.
+        const dangXuat = async (nut) => {
+          if (nut) { nut.disabled = true; nut.textContent = "Đang đăng xuất…"; }
+          try {
+            await fetch("/api/logout", { method: "POST", credentials: "same-origin" });
+          } catch (e) {
+            // Mất mạng thì vẫn điều hướng: GET /logout sẽ xoá phiên phía server.
+          }
+          const o = document.getElementById("tai-banner");
+          if (o) o.style.display = "none";      // phản hồi tức thì, hết trạng thái cũ
+          window.location.replace("/logout");   // xoá phiên lần nữa + về /login
+        };
+
+        const bang = (msg, mau, hienNutDangXuat) => {
+          const o = document.getElementById("tai-banner");
+          if (!o) return;
+          if (!msg) { o.style.display = "none"; return; }
+          o.replaceChildren();
+          const chu = document.createElement("span");
+          chu.textContent = msg;
+          o.appendChild(chu);
+          if (hienNutDangXuat) {
+            const nut = document.createElement("button");
+            nut.type = "button";
+            nut.textContent = "Đăng xuất";
+            nut.setAttribute("aria-label", "Đăng xuất khỏi VLearn");
+            nut.style.cssText = "margin-left:14px;padding:3px 12px;font:inherit;" +
+              "font-size:12px;font-weight:700;border:1px solid currentColor;" +
+              "border-radius:6px;background:transparent;color:inherit;cursor:pointer";
+            nut.addEventListener("click", () => dangXuat(nut));
+            o.appendChild(nut);
+          }
+          o.style.background = mau === "loi" ? "#fef2f2" : "#fff7ed";
+          o.style.color = mau === "loi" ? "#991b1b" : "#9a3412";
+          o.style.borderBottom = "1px solid " + (mau === "loi" ? "#fecaca" : "#fed7aa");
+          o.style.display = "block";
+        };
+        bang("Đang tải dữ liệu tiến độ…", "tai");
+
+        fetch("/api/dashboard?mode=weekly", { credentials: "same-origin" })
+          .then(async (r) => {
+            // Middleware đăng nhập trả 303 -> /login; fetch tự đi theo nên
+            // r.redirected = true khi phiên đã hết hạn.
+            if (r.redirected && r.url.includes("/login")) { window.location.href = "/login"; return null; }
+            const d = await r.json().catch(() => ({}));
+            if (!r.ok) throw new Error(d.detail || ("HTTP " + r.status));
+            return d;
+          })
+          .then((d) => {
+            if (!d || huy) return;
+            if (Array.isArray(d.weeks) && d.weeks.length) {
+              setWeeks(d.weeks);
+              setSelectedWeek(d.weeks.find((w) => w.status === "current") || d.weeks[0]);
+            }
+            if (Array.isArray(d.notifications)) setNotifications(d.notifications);
+            // Hiện rõ dashboard đang cá nhân hoá cho ai + gợi ý riêng của họ.
+            const nd = (d.meta && d.meta.user) || null;
+            setNguoiDung(nd);   // -> header/lời chào hiển thị đúng người
+            const cl = (d.meta && d.meta.strategy) || null;
+            const canhBao = (d.meta && d.meta.warnings) || [];
+            if (nd) {
+              const RR = { cao: "rủi ro cao", trung_binh: "rủi ro trung bình", thap: "rủi ro thấp" };
+              const phan = [
+                `Xin chào ${nd.display_name} · ${nd.role} · ${nd.team_name}`,
+                cl ? `${cl.so_lieu.tong} việc đang mở, ${cl.so_lieu.qua_han} quá hạn, ` +
+                     `${cl.so_lieu.bi_chan} bị chặn — ${RR[cl.muc_do_rui_ro] || cl.muc_do_rui_ro}` : null,
+                cl && cl.viec_can_lam.length ? `Ưu tiên: ${cl.viec_can_lam[0]}` : null,
+              ].filter(Boolean);
+              bang(phan.join("  |  "),
+                   cl && cl.muc_do_rui_ro === "cao" ? "loi" : "tai",
+                   true);   // đã đăng nhập -> hiện nút Đăng xuất
+            } else {
+              bang(canhBao.length ? "Cảnh báo: " + canhBao.join(" · ") : null, "tai");
+            }
+          })
+          .catch((e) => { if (!huy) bang("Không tải được dữ liệu: " + e.message, "loi"); })
+        return () => { huy = true; };
+      }, []);
       const [activeFilter, setActiveFilter] = useState("Tất cả");
       const [showModal, setShowModal] = useState(false);
       const [currentEditingTask, setCurrentEditingTask] = useState(null);
@@ -381,11 +545,13 @@
               
               <div class="flex items-center space-x-3 bg-slate-50 border border-slate-100 rounded-lg p-1.5 pr-3">
                 <div class="h-8 w-8 bg-amber-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
-                  P
+                  {chuCaiDau(nguoiDung)}
                 </div>
-                <div class="text-left">
-                  <p class="text-xs font-bold text-slate-700">Phong 👋</p>
-                  <p class="text-[10px] text-amber-600 font-semibold">Zone 3 Student</p>
+                <div class="text-left" title={emailCua(nguoiDung)}>
+                  <p class="text-xs font-bold text-slate-700">{tenGoi(nguoiDung)} 👋</p>
+                  <p class="text-[10px] text-amber-600 font-semibold">
+                    {nhomCua(nguoiDung)}{vaiTroCua(nguoiDung) ? " · " + vaiTroCua(nguoiDung) : ""}
+                  </p>
                 </div>
               </div>
             </div>
@@ -648,7 +814,10 @@
               
               {/* Profile Card Header */}
               <div class="bg-gradient-to-tr from-slate-900 to-indigo-950 border border-slate-800 text-white rounded-xl p-5 shadow-lg space-y-2">
-                <h3 class="text-base font-bold">Xin chào Phong 👋</h3>
+                <h3 class="text-base font-bold">Xin chào {tenGoi(nguoiDung)} 👋</h3>
+                {emailCua(nguoiDung) ? (
+                  <p class="text-[11px] text-indigo-300 font-medium">{emailCua(nguoiDung)}</p>
+                ) : null}
                 <p class="text-xs text-indigo-200 leading-relaxed font-medium">
                   Bạn có <b class="text-orange-400">3 việc cần chú ý</b> hôm nay để giữ vững tiến trình lớp học.
                 </p>
@@ -881,6 +1050,157 @@
 
     const root = ReactDOM.createRoot(document.getElementById('root'));
     root.render(<App />);
+  </script>
+
+  <!-- Widget trợ lý: nằm ngoài cây React nên không đụng gì tới layout dashboard. -->
+  <button id="tro-ly-nut" type="button" aria-label="Mở trợ lý AI" title="Trợ lý AI">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+         stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+    </svg>
+  </button>
+
+  <section id="tro-ly-khung" aria-label="Trợ lý AI">
+    <div id="tro-ly-dau">
+      <b>Trợ lý tài liệu</b>
+      <button id="tro-ly-dong" type="button" aria-label="Thu nhỏ trợ lý">–</button>
+    </div>
+    <div id="tro-ly-log"></div>
+    <form id="tro-ly-form">
+      <textarea id="tro-ly-o" rows="1" placeholder="Hỏi về quy định, gate, deadline…"
+                aria-label="Câu hỏi cho trợ lý"></textarea>
+      <button id="tro-ly-gui" type="submit" aria-label="Gửi">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor"
+             stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 12h15M13 6l6 6-6 6"/></svg>
+      </button>
+    </form>
+  </section>
+
+  <script>
+  (function () {
+    // Chỉ bật widget khi đã đăng nhập. Trang này vốn đã bị middleware chặn,
+    // đây là lớp phòng thủ thứ hai để không hiện trợ lý cho phiên đã hết hạn.
+    fetch("/api/me", { credentials: "same-origin" })
+      .then((r) => r.json())
+      .then((me) => { if (me && me.logged_in) khoiDong(); })
+      .catch(() => { /* không xác định được phiên -> không hiện widget */ });
+
+    function khoiDong() {
+      var nut = document.getElementById("tro-ly-nut");
+      var khung = document.getElementById("tro-ly-khung");
+      var log = document.getElementById("tro-ly-log");
+      var o = document.getElementById("tro-ly-o");
+      var gui = document.getElementById("tro-ly-gui");
+      var dangBan = false;
+
+      nut.style.display = "grid";
+
+      function moKhung(mo) {
+        khung.classList.toggle("mo", mo);
+        nut.style.display = mo ? "none" : "grid";
+        localStorage.setItem("troLyMo", mo ? "1" : "0");
+        if (mo) o.focus();
+      }
+      nut.addEventListener("click", function () { moKhung(true); });
+      document.getElementById("tro-ly-dong").addEventListener("click", function () { moKhung(false); });
+      if (localStorage.getItem("troLyMo") === "1") moKhung(true);
+
+      // Lời chào ban đầu.
+      themTin("bot", "Chào bạn! Mình tra cứu được quy định, gate và deadline của Cohort 3. Bạn cần hỏi gì?");
+
+      function themTin(loai, chu) {
+        var d = document.createElement("div");
+        d.className = "tl-tin " + (loai === "toi" ? "tl-toi" : loai === "loi" ? "tl-loi" : "tl-bot");
+        var n = document.createElement("div");
+        n.className = "tl-noi-dung";
+        n.textContent = chu;          // textContent: không dựng HTML từ dữ liệu
+        d.appendChild(n);
+        log.appendChild(d);
+        log.scrollTop = log.scrollHeight;
+        return d;
+      }
+
+      function tuGian() { o.style.height = "auto"; o.style.height = Math.min(o.scrollHeight, 90) + "px"; }
+      o.addEventListener("input", tuGian);
+      o.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" && !e.shiftKey && !e.isComposing) {
+          e.preventDefault();
+          document.getElementById("tro-ly-form").requestSubmit();
+        }
+      });
+
+      document.getElementById("tro-ly-form").addEventListener("submit", function (e) {
+        e.preventDefault();
+        var cau = o.value.trim();
+        if (!cau || dangBan) return;
+        o.value = ""; tuGian();
+        hoi(cau);
+      });
+
+      function hoi(cau) {
+        dangBan = true; gui.disabled = true;
+        themTin("toi", cau);
+        var bong = themTin("bot", "");
+        var cho = document.createElement("div");
+        cho.className = "tl-cho";
+        cho.appendChild(document.createTextNode("đang tra cứu"));
+        for (var i = 0; i < 3; i++) cho.appendChild(document.createElement("i"));
+        bong.replaceChildren(cho);
+        log.scrollTop = log.scrollHeight;
+
+        fetch("/api/chat", {                       // cùng origin -> không dính CORS
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "same-origin",
+          body: JSON.stringify({ question: cau, top_k: 4 })
+        })
+          .then(function (r) {
+            return r.json().catch(function () { return {}; }).then(function (d) {
+              if (r.status === 401) { window.location.replace("/login"); return null; }
+              if (!r.ok) {
+                var ct = d.detail;
+                throw new Error(Array.isArray(ct) ? (ct[0] && ct[0].msg) || "Yêu cầu không hợp lệ"
+                                                  : (ct || "HTTP " + r.status));
+              }
+              return d;
+            });
+          })
+          .then(function (d) {
+            if (!d) return;
+            var noi = document.createElement("div");
+            noi.className = "tl-noi-dung";
+            noi.textContent = d.answer || "(không có nội dung)";
+            bong.replaceChildren(noi);
+            if (d.sources && d.sources.length) {
+              var ch = document.createElement("details");
+              ch.className = "tl-nguon";
+              var tt = document.createElement("summary");
+              tt.textContent = d.sources.length + " nguồn tham chiếu";
+              ch.appendChild(tt);
+              d.sources.forEach(function (s, i) {
+                var r2 = document.createElement("div");
+                r2.textContent = "[" + (i + 1) + "] " + (s.title || s.id) + " — " +
+                                 (s.source_file || "") + (s.source_pointer || "");
+                ch.appendChild(r2);
+              });
+              bong.appendChild(ch);
+            }
+          })
+          .catch(function (err) {
+            bong.className = "tl-tin tl-loi";
+            var n = document.createElement("div");
+            n.className = "tl-noi-dung";
+            n.textContent = "Lỗi: " + err.message;
+            bong.replaceChildren(n);
+          })
+          .then(function () {
+            dangBan = false; gui.disabled = false;
+            log.scrollTop = log.scrollHeight;
+          });
+      }
+    }
+  })();
   </script>
 </body>
 </html>

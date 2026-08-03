@@ -1,0 +1,94 @@
+{
+    "doc_type": "xp_system",
+    "language": "vi",
+    "title": "Hệ thống điểm XP (chuyên cần)",
+    "section": {
+        "id": "xp_tracking",
+        "name": "SUPPORT"
+    },
+    "summary": "Hệ thống điểm XP được tích lũy trong suốt Build Phase thông qua việc tham gia các hoạt động của chương trình. Học viên có thể kiếm XP bằng /daily, /weekly submit, /gate submit, tham gia Workshop, hỗ trợ cộng đồng, và showcase/feedback sản phẩm. XP dùng để xét cấp bậc từ LV1 đến LV4.",
+    "metadata": {
+        "cohort": "Cohort 3",
+        "source": "xp_guideline",
+        "priority": 1
+    },
+    "blocks": [
+        {
+            "block_id": "xp_earning_methods",
+            "title": "Cách kiếm XP",
+            "type": "scoring_rules",
+            "content": [
+                "/daily → +5 XP / thành viên / lần nộp",
+                "/weekly submit → +10 XP / thành viên",
+                "/gate submit → Gate +100 XP",
+                "Tham gia Workshop → +10 XP / buổi",
+                "Hỗ trợ cộng đồng → +5 đến +20 XP / lần",
+                "Showcase & feedback sản phẩm → XP thưởng thêm"
+            ],
+            "metadata": {
+                "tags": [
+                    "xp",
+                    "daily",
+                    "weekly",
+                    "gate",
+                    "workshop",
+                    "community",
+                    "showcase"
+                ]
+            }
+        },
+        {
+            "block_id": "xp_levels",
+            "title": "Hệ thống cấp bậc",
+            "type": "progress_tier",
+            "content": [
+                {
+                    "level": "LV1",
+                    "name": "Active Builder",
+                    "threshold_xp": 200
+                },
+                {
+                    "level": "LV2",
+                    "name": "Solid Builder",
+                    "threshold_xp": 500
+                },
+                {
+                    "level": "LV3",
+                    "name": "Star Builder",
+                    "threshold_xp": 1000
+                },
+                {
+                    "level": "LV4",
+                    "name": "Elite Builder",
+                    "threshold_xp": 1500
+                }
+            ],
+            "metadata": {
+                "tags": [
+                    "level",
+                    "xp threshold",
+                    "builder"
+                ]
+            }
+        }
+    ],
+    "keywords": [
+        "xp",
+        "chuyen can",
+        "daily",
+        "weekly submit",
+        "gate submit",
+        "workshop",
+        "community support",
+        "showcase",
+        "active builder",
+        "solid builder",
+        "star builder",
+        "elite builder"
+    ],
+    "notes": [
+        "XP được tích lũy trong suốt Build Phase.",
+        "Mỗi action có mức XP riêng, nên agent cần tính đúng theo loại hành động.",
+        "Cấp bậc được xét theo tổng XP đạt được."
+    ]
+}

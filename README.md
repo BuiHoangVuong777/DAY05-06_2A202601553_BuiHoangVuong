@@ -29,10 +29,30 @@ Prototype hiện có:
 ```bash
 cd codebase
 cp .env.example .env
+./venv/bin/pip install -r requirements.txt   # lần đầu
 python3 server.py
 ```
 
-Mở [http://127.0.0.1:8000](http://127.0.0.1:8000). Xem hướng dẫn kỹ hơn tại [`codebase/README.md`](codebase/README.md).
+Mở [http://127.0.0.1:8000](http://127.0.0.1:8000) — sẽ tự chuyển sang trang đăng nhập.
+
+### Đăng nhập VLearn (xác thực giả lập)
+
+Dự án chưa có xác thực thật, nên đây là **auth mô phỏng**, bật/tắt bằng `DEV_AUTH`
+trong `.env`. Tài khoản mặc định:
+
+| Biến | Mặc định |
+| --- | --- |
+| `DEV_AUTH_USERNAME` | `vlearn` |
+| `DEV_AUTH_PASSWORD` | `vlearn-dev` |
+
+Luồng: `/` (chưa đăng nhập) → chuyển hướng `/login` → nhập tài khoản → `POST /login`
+→ tạo cookie phiên → chuyển hướng `/` → `index.html`. Đăng xuất tại
+[`/logout`](http://127.0.0.1:8000/logout).
+
+- Đặt `DEV_AUTH=false` để chặn toàn bộ đăng nhập (dùng khi nối auth thật).
+- Đặt `SESSION_SECRET` để phiên đăng nhập sống sót qua lần khởi động lại:
+  `python3 -c "import secrets; print(secrets.token_urlsafe(32))"`.
+- Chỉ trang HTML bị chặn; `/api/*` giữ nguyên như trước để không phá luồng cũ.
 
 ## Cấu trúc bài nộp
 

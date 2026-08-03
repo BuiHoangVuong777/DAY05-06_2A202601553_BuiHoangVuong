@@ -1,0 +1,185 @@
+{
+    "doc_type": "discord_commands",
+    "language": "vi",
+    "title": "Discord Commands",
+    "section": {
+        "id": "kute_bot_discord",
+        "name": "KUTEBOT · DISCORD"
+    },
+    "summary": "Danh sách lệnh Discord hỗ trợ báo cáo, chọn đề/exam, quản lý cá nhân và team, gate, và ticket hỗ trợ. Người dùng có thể gõ / trong Discord để xem gợi ý lệnh.",
+    "metadata": {
+        "cohort": "Cohort 3",
+        "source": "discord_command_reference",
+        "priority": 1
+    },
+    "blocks": [
+        {
+            "block_id": "report_commands",
+            "title": "Báo cáo",
+            "type": "reporting",
+            "content": [
+                {
+                    "command": "/daily",
+                    "description": "Nộp daily stand-up"
+                },
+                {
+                    "command": "/weekly submit",
+                    "description": "Nộp báo cáo tuần"
+                },
+                {
+                    "command": "/weekly view",
+                    "description": "Xem báo cáo tuần"
+                },
+                {
+                    "command": "/weekly update",
+                    "description": "Sửa báo cáo đã nộp"
+                },
+                {
+                    "command": "/weekly history",
+                    "description": "Lịch sử báo cáo tuần"
+                },
+                {
+                    "command": "/weekly suggest",
+                    "description": "Gợi ý 'Done' từ daily"
+                }
+            ],
+            "metadata": {
+                "tags": [
+                    "daily",
+                    "weekly",
+                    "report",
+                    "history",
+                    "suggest"
+                ]
+            }
+        },
+        {
+            "block_id": "exam_selection_commands",
+            "title": "Chọn đề · Exam",
+            "type": "selection",
+            "content": [
+                {
+                    "command": "/exam available",
+                    "description": "Mã đề còn trống"
+                },
+                {
+                    "command": "/exam pick",
+                    "description": "Chọn đề cho team"
+                },
+                {
+                    "command": "/exam view",
+                    "description": "Xem đề đang chọn"
+                }
+            ],
+            "metadata": {
+                "tags": [
+                    "exam",
+                    "select",
+                    "available",
+                    "view"
+                ]
+            }
+        },
+        {
+            "block_id": "personal_team_commands",
+            "title": "Cá nhân & Team",
+            "type": "team_management",
+            "content": [
+                {
+                    "command": "/myteam members",
+                    "description": "Thành viên team"
+                },
+                {
+                    "command": "/rank",
+                    "description": "Kiểm tra điểm XP và thứ hạng"
+                }
+            ],
+            "metadata": {
+                "tags": [
+                    "team",
+                    "members",
+                    "rank",
+                    "xp"
+                ]
+            }
+        },
+        {
+            "block_id": "gate_commands",
+            "title": "Gate",
+            "type": "submission",
+            "content": [
+                {
+                    "command": "/gate list",
+                    "description": "Gate đang active"
+                },
+                {
+                    "command": "/gate status",
+                    "description": "Trạng thái gate team"
+                },
+                {
+                    "command": "/gate submit",
+                    "description": "Nộp gate cho team"
+                },
+                {
+                    "command": "/gate view",
+                    "description": "Chi tiết 1 gate"
+                }
+            ],
+            "metadata": {
+                "tags": [
+                    "gate",
+                    "submit",
+                    "status",
+                    "list",
+                    "view"
+                ]
+            }
+        },
+        {
+            "block_id": "support_ticket_commands",
+            "title": "Hỗ trợ · Ticket",
+            "type": "support",
+            "content": [
+                {
+                    "command": "/ticket create",
+                    "description": "Tạo ticket hỗ trợ"
+                },
+                {
+                    "command": "/ticket close",
+                    "description": "Đóng ticket hiện tại"
+                }
+            ],
+            "metadata": {
+                "tags": [
+                    "ticket",
+                    "support",
+                    "create",
+                    "close"
+                ]
+            }
+        }
+    ],
+    "keywords": [
+        "discord commands",
+        "daily",
+        "weekly submit",
+        "weekly update",
+        "weekly history",
+        "weekly suggest",
+        "exam available",
+        "exam pick",
+        "myteam members",
+        "rank",
+        "gate list",
+        "gate status",
+        "gate submit",
+        "gate view",
+        "ticket create",
+        "ticket close"
+    ],
+    "notes": [
+        "Người dùng có thể gõ / trong Discord để xem gợi ý lệnh.",
+        "Các lệnh được chia theo nhóm để dễ tra cứu trong hệ thống RAG.",
+        "Lệnh /weekly suggest hỗ trợ gợi ý Done từ daily."
+    ]
+}

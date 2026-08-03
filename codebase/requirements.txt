@@ -1,3 +1,13 @@
+# --- Web server (server.py) ---
+# fastapi/uvicorn vốn đã cần cho server.py nhưng chưa từng được khai báo ở đây.
+fastapi>=0.115
+uvicorn[standard]>=0.30
+# Bắt buộc cho form đăng nhập: FastAPI dùng Form(...) qua python-multipart.
+python-multipart>=0.0.9
+# Bắt buộc cho SessionMiddleware (cookie phiên đã ký).
+itsdangerous>=2.1
+
+# --- Streamlit app (app/) ---
 streamlit>=1.38
 SQLAlchemy>=2.0
 python-dotenv>=1.0
